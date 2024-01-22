@@ -20,15 +20,19 @@ class SensorData
 {
 private:
     int sensor_id_;
+    int pin_;
     std::string type_;
     double value_;
     std::string unit_;
 
 public:
-    SensorData(int sensor_id, std::string type, double value, std::string unit);
+    SensorData(int sensor_id, int pin, std::string type, double value, std::string unit);
 
     int GetSensorId() const;
     void SetSensorId(int sensor_id);
+
+    int GetPin() const;
+    void SetPin(int pin);
 
     std::string GetType() const;
     void SetType(std::string type);
