@@ -1,5 +1,13 @@
 #include "sensor.h"
 
+SensorData::SensorData(int sensor_id, std::string type, double value, std::string unit)
+{
+    sensor_id_ = sensor_id;
+    type_ = type;
+    value_ = value;
+    unit_ = unit;
+}
+
 int SensorData::GetSensorId() const
 {
     return sensor_id_;

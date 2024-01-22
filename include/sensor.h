@@ -25,6 +25,8 @@ private:
     std::string unit_;
 
 public:
+    SensorData(int sensor_id, std::string type, double value, std::string unit);
+
     int GetSensorId() const;
     void SetSensorId(int sensor_id);
 
