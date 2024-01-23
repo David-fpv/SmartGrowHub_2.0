@@ -34,7 +34,7 @@ void initialization()
     delay(100);
 }*/
 
-void readHeight()
+int readHeight()
 {
     int duration, distance;
     digitalWrite(TRIG_PIN, HIGH);
@@ -42,15 +42,14 @@ void readHeight()
     digitalWrite(TRIG_PIN, LOW);
     duration = pulseIn(ECHO_PIN, HIGH);
     distance = duration / 58;
-    Serial.print(distance);
-    Serial.println(" cm");
+    return distance;
 }
 
-void readIllumination()
+int readIllumination()
 {
     int value = analogRead(LDR_PIN);
     int percentage = map(value, MIN_VALUE, MAX_VALUE, 0, 100);
-    Serial.println(percentage);
+    return percentage;
 }
 
 

@@ -1,5 +1,7 @@
+#pragma once
+
 #include <TroykaMQ.h>
 
 void initialization();
-void readHeight();
-void readIllumination();
+int readHeight();
+int readIllumination();
