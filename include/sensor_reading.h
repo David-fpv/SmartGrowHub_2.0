@@ -16,23 +16,19 @@
     "Illumination"
 };*/
 
-class SensorData
+class SensorReading
 {
-private:
+private: 
     int sensor_id_;
-    int pin_;
     std::string type_;
     double value_;
     std::string unit_;
 
 public:
-    SensorData(int sensor_id, std::string type, std::string unit);
+    SensorReading(int sensor_id, std::string type, std::string unit);
 
     int GetSensorId() const;
     void SetSensorId(int sensor_id);
-
-    int GetPin() const;
-    void SetPin(int pin);
 
     std::string GetType() const;
     void SetType(std::string type);
