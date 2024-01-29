@@ -25,7 +25,7 @@ private:
     std::string unit_;
 
 public:
-    SensorReading(int sensor_id, std::string type, std::string unit);
+    SensorReading(int sensor_id, std::string type, double value, std::string unit);
 
     int GetSensorId() const;
     void SetSensorId(int sensor_id);
