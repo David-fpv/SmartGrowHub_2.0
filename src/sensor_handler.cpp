@@ -1,6 +1,6 @@
-#include "information.h"
+#include "sensor_handler.h"
 
-void Information::setValue(int id, std::string type, double value)
+/*void SensorHandler::setValue(int id, std::string type, double value)
 {
     for(int i = 0; i < sensors_data_.size(); i++)
     {
@@ -10,15 +10,15 @@ void Information::setValue(int id, std::string type, double value)
             break;
         }
     }
-}
+}*/
 
-void Information::addSensorData(int sensor_id, std::string type, std::string unit)
+void SensorHandler::addSensorData()
 {
     SensorData new_sensor_data(sensor_id, type, unit);
     sensors_data_.push_back(new_sensor_data);
 }
 
-String Information::getStringJson()
+/*String SensorHandler::getStringJson()
 {
     DynamicJsonDocument json(1024);
 
@@ -34,4 +34,4 @@ String Information::getStringJson()
     String jsonString;
     serializeJson(json, jsonString);
     return jsonString;
-}
+}*/
