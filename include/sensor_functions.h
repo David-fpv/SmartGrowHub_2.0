@@ -3,5 +3,5 @@
 #include <TroykaMQ.h>
 
 void initialization();
-int readHeight();
-int readIllumination();
+double readHeight();
+double readIllumination();

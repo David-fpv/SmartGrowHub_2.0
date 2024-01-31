@@ -1,4 +1,4 @@
-#include "data_collection.h"
+#include "sensor_functions.h"
 
 #define PIN_MQ2  A0
 #define TRIG_PIN 13 // pin for Trig
@@ -34,7 +34,7 @@ void initialization()
     delay(100);
 }*/
 
-int readHeight()
+double readHeight()
 {
     int duration, distance;
     digitalWrite(TRIG_PIN, HIGH);
@@ -42,14 +42,14 @@ int readHeight()
     digitalWrite(TRIG_PIN, LOW);
     duration = pulseIn(ECHO_PIN, HIGH);
     distance = duration / 58;
-    return distance;
+    return (double)distance;
 }
 
-int readIllumination()
+double readIllumination()
 {
     int value = analogRead(LDR_PIN);
     int percentage = map(value, MIN_VALUE, MAX_VALUE, 0, 100);
-    return percentage;
+    return (double)percentage;
 }
 
 

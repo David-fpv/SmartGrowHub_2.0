@@ -1,37 +1,61 @@
 #include "sensor_handler.h"
 
-/*void SensorHandler::setValue(int id, std::string type, double value)
-{
-    for(int i = 0; i < sensors_data_.size(); i++)
-    {
-        if(id == sensors_data_[i].GetSensorId() && type == sensors_data_[i].GetType())
-        {
-            sensors_data_[i].SetValue(value);
-            break;
-        }
-    }
-}*/
 
-void SensorHandler::addSensorData()
+SensorHandler::SensorHandler(void (*initialization_function) ())
 {
-    SensorData new_sensor_data(sensor_id, type, unit);
-    sensors_data_.push_back(new_sensor_data);
+    initialization_function_ = initialization_function;
 }
 
-/*String SensorHandler::getStringJson()
+
+void SensorHandler::initialization()
+{
+    initialization_function_();
+}
+
+
+void SensorHandler::addSensorInfo(SensorInfo sensor)
+{
+    sensors_.push_back(sensor);
+}
+
+
+SensorReading SensorHandler::getReading(int sensor_id, std::string type)
+{
+    for (int i = 0; i < sensors_.size(); i++)
+    {
+        if (sensor_id == sensors_[i].GetSensorId() && type == sensors_[i].GetType())
+        {
+            return SensorReading(sensors_[i].GetSensorId(), sensors_[i].GetType(), sensors_[i].GetValue(), sensors_[i].GetUnit());
+        }
+    }
+}
+
+
+std::vector<SensorReading> SensorHandler::getAllReadings()
+{
+    std::vector<SensorReading> all_readings;
+
+    for (int i = 0; i < sensors_.size(); i++)
+    {
+        all_readings.push_back(SensorReading(sensors_[i].GetSensorId(), sensors_[i].GetType(), sensors_[i].GetValue(), sensors_[i].GetUnit()));
+    }
+
+    return all_readings;
+}
+
+String SensorHandler::getStringJson()
 {
     DynamicJsonDocument json(1024);
 
-    for (int i = 0; i < sensors_data_.size(); i++)
+    for (int i = 0; i < sensors_.size(); i++)
     {
-        json[i]["SensorId"] = sensors_data_[i].GetSensorId();
-        json[i]["Type"] = sensors_data_[i].GetType();
-        json[i]["Value"] = sensors_data_[i].GetValue();
-        json[i]["Unit"] = sensors_data_[i].GetUnit();
+        json[i]["SensorId"] = sensors_[i].GetSensorId();
+        json[i]["Type"] = sensors_[i].GetType();
+        json[i]["Value"] = sensors_[i].GetValue();
+        json[i]["Unit"] = sensors_[i].GetUnit();
     }
 
-    
     String jsonString;
     serializeJson(json, jsonString);
     return jsonString;
-}*/
+}

@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include "sensor_reading.h"
-#include "data_collection.h"
+#include "sensor_info.h"
 #include <ArduinoJson.h>
 
 
@@ -11,15 +11,22 @@ class SensorHandler
 {
 public: 
 
-    SensorReading getReading(std::string);
+    SensorHandler(void (*initialization_function) ());
 
-    SensorReading *getAllReadings();
+    void initialization();
 
-    void addSensorData();
+    void addSensorInfo(SensorInfo sensor);
 
-    //String getStringJson();
+    SensorReading getReading(int sensor_id, std::string type);
+
+    std::vector<SensorReading> getAllReadings();
+
+    String getStringJson();
+
 
 private:
 
-    std::vector<SensorReading> sensors_;
+    void (*initialization_function_) ();
+
+    std::vector<SensorInfo> sensors_;
 };
