@@ -4,7 +4,7 @@ Component::Component(std::string type, double value, std::string unit)
 {
     type_ = type;
     value_ = value;
-    unit_ = unit;
+    unit_ = unit;   
 }
 
 std::string Component::GetType() const
