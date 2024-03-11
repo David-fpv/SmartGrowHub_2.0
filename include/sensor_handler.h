@@ -4,6 +4,7 @@
 #include <vector>
 #include "sensor_reading.h"
 #include "sensor_info.h"
+#include "sensor_functions.h"
 #include <ArduinoJson.h>
 
 
@@ -11,7 +12,7 @@ class SensorHandler
 {
 public: 
 
-    SensorHandler(void (*initialization_function) ());
+    SensorHandler();
 
     void initialization();
 
@@ -25,8 +26,6 @@ public:
 
 
 private:
-
-    void (*initialization_function_) ();
 
     std::vector<SensorInfo> sensors_;
 };

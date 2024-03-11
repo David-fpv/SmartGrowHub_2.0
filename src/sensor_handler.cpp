@@ -1,15 +1,14 @@
 #include "sensor_handler.h"
 
 
-SensorHandler::SensorHandler(void (*initialization_function) ())
+SensorHandler::SensorHandler()
 {
-    initialization_function_ = initialization_function;
 }
 
 
 void SensorHandler::initialization()
 {
-    initialization_function_();
+    initialization();
 }
 
 
@@ -55,7 +54,7 @@ String SensorHandler::getStringJson()
         json[i]["Unit"] = sensors_[i].GetUnit();
     }
 
-    String jsonString;
-    serializeJson(json, jsonString);
-    return jsonString;
+    String string_json;
+    serializeJson(json, string_json);
+    return string_json;
 }
