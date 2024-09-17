@@ -76,5 +76,10 @@ double readHumidity()
     return temp.relative_humidity; 
 }
 
+double readRandomNumber()
+{
+    return millis() % 1000;
+}
+
 
 

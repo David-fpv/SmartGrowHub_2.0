@@ -13,3 +13,4 @@ double readHydrogen();
 double readAirTemprature();
 double readAirHumidity();
 double readSoilHumidity();
+double readRandomNumber();
