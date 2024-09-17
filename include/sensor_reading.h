@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "sensor_info.h"
 
 /*char sensor_type[][16] {
     "Methane",
@@ -25,6 +26,7 @@ private:
 
 public:
     SensorReading(int sensor_id, std::string type, double value, std::string unit);
+    SensorReading(SensorInfo sensor_info);
 
     int GetSensorId() const;
     std::string GetType() const;

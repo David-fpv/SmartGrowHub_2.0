@@ -8,6 +8,14 @@ SensorReading::SensorReading(int sensor_id, std::string type, double value, std:
     unit_ = unit;
 }
 
+SensorReading::SensorReading(SensorInfo sensor_info)
+{
+    sensor_id_ = sensor_info.GetSensorId();
+    type_ = sensor_info.GetType();
+    value_ = sensor_info.GetValue();
+    unit_ = sensor_info.GetUnit();
+}
+
 int SensorReading::GetSensorId() const
 {
     return sensor_id_;

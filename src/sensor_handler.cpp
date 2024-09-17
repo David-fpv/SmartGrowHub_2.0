@@ -24,7 +24,7 @@ SensorReading SensorHandler::getReading(int sensor_id)
     {
         if (sensor_id == sensors_[i].GetSensorId())
         {
-            return sensors_[i].GetSensorReading();
+            return SensorReading(sensors_[i]);
         }
     }
 }
@@ -36,7 +36,7 @@ std::vector<SensorReading> SensorHandler::getAllReadings()
 
     for (int i = 0; i < sensors_.size(); i++)
     {
-        all_readings.push_back(sensors_[i].GetSensorReading());
+        all_readings.push_back(SensorReading(sensors_[i]));
     }
 
     return all_readings;
@@ -48,7 +48,7 @@ String SensorHandler::getStringJson()
 
     for (int i = 0; i < sensors_.size(); i++)
     {
-        SensorReading sensor = sensors_[i].GetSensorReading();
+        SensorReading sensor = SensorReading(sensors_[i]);
 
         json[i]["SensorId"] = sensor.GetSensorId();
         json[i]["Type"] = sensor.GetType();
