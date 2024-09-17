@@ -18,7 +18,7 @@ public:
 
     void addSensorInfo(SensorInfo sensor);
 
-    SensorReading getReading(int sensor_id, std::string type);
+    SensorReading getReading(int sensor_id);
 
     std::vector<SensorReading> getAllReadings();
 

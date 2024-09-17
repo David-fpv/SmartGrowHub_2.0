@@ -1,8 +1,6 @@
 #pragma once
 #include <Arduino.h>
-
 #include <TroykaMQ.h>
-
 #include <Wire.h>
 #include <Adafruit_AHTX0.h>
 

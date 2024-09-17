@@ -1,4 +1,4 @@
-#include "setting_handler.h"
+/*#include "setting_handler.h"
 
 void SettingHandler::AddSetting(Setting setting)
 {
@@ -53,4 +53,4 @@ void SettingHandler::CurateAllSetting()
     {
         settings_[i].Adjust();
     }
-}
+}*/

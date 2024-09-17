@@ -31,3 +31,8 @@ std::string SensorInfo::GetUnit()
 {
     return unit_;
 }
+
+SensorReading SensorInfo::GetSensorReading()
+{
+    return SensorReading(sensor_id_, type_, function_(), unit_);
+}

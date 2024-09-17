@@ -18,13 +18,13 @@ void SensorHandler::addSensorInfo(SensorInfo sensor)
 }
 
 
-SensorReading SensorHandler::getReading(int sensor_id, std::string type)
+SensorReading SensorHandler::getReading(int sensor_id)
 {
     for (int i = 0; i < sensors_.size(); i++)
     {
-        if (sensor_id == sensors_[i].GetSensorId() && type == sensors_[i].GetType())
+        if (sensor_id == sensors_[i].GetSensorId())
         {
-            return SensorReading(sensors_[i].GetSensorId(), sensors_[i].GetType(), sensors_[i].GetValue(), sensors_[i].GetUnit());
+            return sensors_[i].GetSensorReading();
         }
     }
 }
@@ -36,7 +36,7 @@ std::vector<SensorReading> SensorHandler::getAllReadings()
 
     for (int i = 0; i < sensors_.size(); i++)
     {
-        all_readings.push_back(SensorReading(sensors_[i].GetSensorId(), sensors_[i].GetType(), sensors_[i].GetValue(), sensors_[i].GetUnit()));
+        all_readings.push_back(sensors_[i].GetSensorReading());
     }
 
     return all_readings;
@@ -48,10 +48,12 @@ String SensorHandler::getStringJson()
 
     for (int i = 0; i < sensors_.size(); i++)
     {
-        json[i]["SensorId"] = sensors_[i].GetSensorId();
-        json[i]["Type"] = sensors_[i].GetType();
-        json[i]["Value"] = sensors_[i].GetValue();
-        json[i]["Unit"] = sensors_[i].GetUnit();
+        SensorReading sensor = sensors_[i].GetSensorReading();
+
+        json[i]["SensorId"] = sensor.GetSensorId();
+        json[i]["Type"] = sensor.GetType();
+        json[i]["Value"] = sensor.GetValue();
+        json[i]["Unit"] = sensor.GetUnit();
     }
 
     String string_json;

@@ -5,6 +5,7 @@
 class Component
 {
 private:
+    //std::string id_;
     std::string type_;
     double value_;
     std::string unit_;

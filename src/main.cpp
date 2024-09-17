@@ -1,13 +1,12 @@
 #include <Arduino.h>
-#include "data_collection.h"
 #include "setting.h"
-#include "information.h"
+#include "sensor_handler.h"
 
 //#define THRESHOLD 300
 #define THRESHOLD 263
 
 Setting smart_grow_hub();
-Information info;
+SensorHandler info;
 
 void readAllSensors();
 

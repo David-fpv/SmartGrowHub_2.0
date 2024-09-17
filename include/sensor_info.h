@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "sensor_reading.h"
 
 class SensorInfo
 {
@@ -19,4 +20,6 @@ public:
     std::string GetType();
     std::string GetUnit();
     double GetValue();
+
+    SensorReading GetSensorReading();
 };
