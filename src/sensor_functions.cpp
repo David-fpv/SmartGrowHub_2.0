@@ -11,7 +11,7 @@
 Adafruit_AHTX0 aht;
 MQ2 mq2(PIN_MQ2);
 
-void initialization()
+void initialization_sensors()
 {
     mq2.calibrate(3.2);
     aht.begin();

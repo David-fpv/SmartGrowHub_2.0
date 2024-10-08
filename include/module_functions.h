@@ -3,4 +3,5 @@
 #include <Arduino.h>
 
 void initialization_module();
-void blink();
+void blink(int mode);
+void nothing(int mode);

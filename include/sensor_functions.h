@@ -4,7 +4,7 @@
 #include <Wire.h>
 #include <Adafruit_AHTX0.h>
 
-void initialization();
+void initialization_sensors();
 double readHeight();
 double readIllumination();
 double readSmoke();
