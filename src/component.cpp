@@ -1,8 +1,9 @@
 #include "component.h"
 
-Component::Component(std::string type, double value, std::string unit)
+Component::Component(std::string type, TimeRange time, double value, std::string unit)
 {
     type_ = type;
+    time_ = time;
     value_ = value;
     unit_ = unit;   
 }
@@ -15,6 +16,17 @@ std::string Component::GetType() const
 void Component::SetType(std::string type)
 {
     type_ = type;
+}
+
+
+TimeRange Component::GetTime() const
+{
+    return time_;
+} 
+
+void Component::SetTime (TimeRange time)
+{
+    time_ = time;
 }
 
 
