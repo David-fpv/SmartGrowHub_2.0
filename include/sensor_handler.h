@@ -22,8 +22,6 @@ public:
 
     std::vector<SensorReading> getAllReadings();
 
-    String getStringJson();
-
 
 private:
 

@@ -41,22 +41,3 @@ std::vector<SensorReading> SensorHandler::getAllReadings()
 
     return all_readings;
 }
-
-String SensorHandler::getStringJson()
-{
-    DynamicJsonDocument json(1024);
-
-    for (int i = 0; i < sensors_.size(); i++)
-    {
-        SensorReading sensor = SensorReading(sensors_[i]);
-
-        json[i]["SensorId"] = sensor.GetSensorId();
-        json[i]["Type"] = sensor.GetType();
-        json[i]["Value"] = sensor.GetValue();
-        json[i]["Unit"] = sensor.GetUnit();
-    }
-
-    String string_json;
-    serializeJson(json, string_json);
-    return string_json;
-}
