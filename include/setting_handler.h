@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <ArduinoJson.h>
 #include "setting.h"
 #include "component.h"
 #include "module_functions.h"
