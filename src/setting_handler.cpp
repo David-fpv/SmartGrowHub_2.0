@@ -33,7 +33,7 @@ Setting SettingHandler::GetSetting(std::string type)
 }
 
 
-void SettingHandler::AddComponentToSetting(std::string type, Component some_component)
+void SettingHandler::AddComponentToSetting(std::string type, Entry some_component)
 {
     for (int i = 0; i < settings_.size(); i++)
     {
@@ -46,7 +46,7 @@ void SettingHandler::AddComponentToSetting(std::string type, Component some_comp
 }
 
 
-void SettingHandler::UpdateComponentToSetting(std::string type, Component some_component)
+void SettingHandler::UpdateComponentToSetting(std::string type, Entry some_component)
 {
     for (int i = 0; i < settings_.size(); i++)
     {
@@ -83,7 +83,7 @@ void SettingHandler::SetStringJson(std::string string_json)
                     {
                         std::string unit = component_value["Unit"].as<std::string>();
                     }
-                    settings_[i].updateComponent(Component (type, value, unit));
+                    settings_[i].updateComponent(Entry (type, value, unit));
                 }
             } 
         }

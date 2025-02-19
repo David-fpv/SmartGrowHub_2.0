@@ -2,33 +2,37 @@
 
 #include <string>
 #include <vector>
-#include "component.h"
+#include "entry.h"
 #include "time_range.h"
 #include "Arduino.h"
+
+
+enum class SettingMode {Off, On, Cycle, Daily, Weekly};
+
 
 class Setting
 {
 private:
-    std::string type_;
-    int mode_;
+    std::string type_;          // Module type (name)
+    std::string version_id_;    // Version ID settings
+    SettingMode mode_;
+    std::vector<Entry> entries_;
     void (*module_function_) (int mode);
-    std::vector<Component> components_;
 
 public:
-    Setting(std::string type, void (*function) (int), int mode_ = 0);
+    Setting(std::string type, void (*function) (int), SettingMode mode_ = {SettingMode::Off});
 
     std::string GetType() const;
+
+    int GetVersionId() const;
+    void SetVersionId(int mode);
+
     int GetMode() const;
     void SetMode(int mode);
-    //void SetType(std::string type);
 
-    //void SetFunction(void (*function) (int)); 
-
-    //void addComponent(std::string type, double value, std::string unit);
-    void addComponent(Component new_component);
-
-    //void updateComponent(std::string type, double value, std::string unit);
-    void updateComponent(Component some_component);
+    void addEntry(Entry new_entry);
+    void updateEntry(std::string entry_id, Entry updated_entry);
+    void deleteEntry(std::string entry_id);
 
     void adjust();
 };

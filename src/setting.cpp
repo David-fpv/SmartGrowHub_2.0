@@ -41,11 +41,11 @@ void  Setting::SetMode(int mode)
 
 // void Setting::addComponent(std::string type, double value, std::string unit)
 // {
-//     Component new_component(type, value, unit);
+//     Entry new_component(type, value, unit);
 //     components_.push_back(new_component);
 // }
 
-void Setting::addComponent(Component new_component)
+void Setting::addComponent(Entry new_component)
 {
     components_.push_back(new_component);
 }
@@ -65,7 +65,7 @@ void Setting::addComponent(Component new_component)
 //     addComponent(type, value, unit);
 // }
 
-void Setting::updateComponent(Component some_component)
+void Setting::updateComponent(Entry some_component)
 {
     for (int i = 0; i < components_.size(); i++)
     {
