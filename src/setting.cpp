@@ -1,88 +1,33 @@
 #include "setting.h"
 
-Setting::Setting(std::string type, void (*function) (int), int mode)
+
+Setting::Setting(std::string type, void (*function) (int), Program program)
 {
     type_ = type;
     module_function_ = function;
-    mode_ = mode;
+    program_ = program;
 }
+
 
 std::string Setting::GetType() const
 {
     return type_;
 }
 
-int  Setting::GetMode() const
+
+void Setting::SetProgram(Program program)
 {
-    return mode_;
+    program_ = program;
 }
 
-void  Setting::SetMode(int mode)
+
+Program Setting::GetProgram() const
 {
-    if (mode >= 0 and mode <= 2)
-    {
-        mode_ = mode;
-    }
-    else
-    {
-        throw std::invalid_argument( "An impossible setting operation mode was obtained" );
-    }
-}
-
-// void Setting::SetType(std::string type)
-// {
-//     type_ = type;
-// }
-
-// void Setting::SetFunction(void (*function) (int))
-// {
-//     module_function_ = function;
-// }
-
-// void Setting::addComponent(std::string type, double value, std::string unit)
-// {
-//     Entry new_component(type, value, unit);
-//     components_.push_back(new_component);
-// }
-
-void Setting::addComponent(Entry new_component)
-{
-    components_.push_back(new_component);
-}
-
-// void Setting::updateComponent(std::string type, double value, std::string unit)
-// {
-//     for (int i = 0; i < components_.size(); i++)
-//     {
-//         if (components_[i].GetType() == type)
-//         {
-//             components_[i].SetValue(value);
-//             components_[i].SetUnit(unit);
-//             break;
-//         }
-//     }
-
-//     addComponent(type, value, unit);
-// }
-
-void Setting::updateComponent(Entry some_component)
-{
-    for (int i = 0; i < components_.size(); i++)
-    {
-        if (components_[i].GetType() == some_component.GetType())
-        {
-            components_[i].SetTime(some_component.GetTime());
-            components_[i].SetValue(some_component.GetValue());
-            components_[i].SetUnit(some_component.GetUnit());
-            break;
-        }
-    }
-
-    addComponent(some_component);
+    return program_;
 }
 
 
 void Setting::adjust()
 {
-    module_function_(mode_);
+    //module_function_(mode_);
 }

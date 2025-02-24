@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "program.h"
 #include "setting.h"
 #include "entry.h"
 #include "module_functions.h"
@@ -11,22 +12,15 @@ class SettingHandler
 public:
 
     void AddSetting(Setting setting);
+    void UpdateSetting(std::string type, Program new_program);
 
-    void UpdateSetting(Setting setting);
-
-    Setting GetSetting(std::string type);
-
-    void AddComponentToSetting(std::string type, Entry some_component);
-    void UpdateComponentToSetting(std::string type, Entry some_component);
-
-    void SetStringJson(std::string string_json);
+    //void SaveJsonSetting(); // Functions for saving and loading settings to esp32 memory
+    //void LoadJsonSetting(); 
 
     void CurateSetting(std::string type);
-
-    void CurateAllSetting();
+    void CurateAllSetting(); 
 
 private:
-    
     std::vector<Setting> settings_;
 
 };
