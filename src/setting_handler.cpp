@@ -6,13 +6,13 @@ void SettingHandler::AddSetting(Setting setting)
 }
 
 
-void  SettingHandler::UpdateSetting(std::string type, Program new_program)
+void  SettingHandler::SetProgram(Program program)
 {
     for (int i = 0; i < settings_.size(); i++)
     {
-        if (settings_[i].GetType() == setting.GetType())
+        if (settings_[i].GetType() == program.GetType())
         {
-            settings_[i].SetProgram(new_program);
+            settings_[i].SetProgram(program);
         }
         break;
     }

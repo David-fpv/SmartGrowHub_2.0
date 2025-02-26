@@ -1,15 +1,5 @@
 #pragma once
-
-
-enum class Day {AnyDay, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday};
-
-
-typedef struct TimeStamp
-{   
-    Day day;
-    int hour;
-    int minutes;
-};
+#include "time_stamp.h"
 
 
 typedef struct TimeRange

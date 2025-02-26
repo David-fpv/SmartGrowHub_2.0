@@ -12,7 +12,7 @@ class SettingHandler
 public:
 
     void AddSetting(Setting setting);
-    void UpdateSetting(std::string type, Program new_program);
+    void SetProgram(Program program);
 
     //void SaveJsonSetting(); // Functions for saving and loading settings to esp32 memory
     //void LoadJsonSetting(); 

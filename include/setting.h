@@ -23,7 +23,7 @@ public:
 
     std::string GetType() const;
     void SetProgram(Program program);
-    Program GetProgram() const`;
+    Program GetProgram() const;
 
     void adjust();
 };

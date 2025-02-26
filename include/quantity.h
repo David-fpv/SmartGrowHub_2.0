@@ -2,10 +2,20 @@
 #include "string"
 
 
-enum class Units {Percent, Celsius};
+enum class Unit {Percent = 1, Celsius, Unknown};
 
 
 typedef struct Quantity {
     int magnitude_;
-    Units unit;
+    Unit unit_;
 };
+
+
+Unit parseUnit(int unit_id) {
+    switch (unit_id) {
+        case 1: return Unit::Percent;
+        case 2: return Unit::Celsius;
+        default: return Unit::Unknown;
+    }
+}
+

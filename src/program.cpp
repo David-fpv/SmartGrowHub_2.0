@@ -1,11 +1,18 @@
 #include "program.h"
 
 
-Program::Program(std::string version_id, SettingMode mode, std::vector<Entry> entries)
+Program::Program(std::string type, std::string version_id, SettingMode mode, std::vector<Entry> entries)
 {
+    type_ = type;
     version_id_ = version_id;
     mode_ = mode;
     entries_ = entries;
+}
+
+
+std::string Program::GetType() const
+{
+    return type_;
 }
 
 
