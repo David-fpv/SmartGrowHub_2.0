@@ -27,6 +27,7 @@ SensorReading SensorHandler::getReading(int sensor_id)
             return SensorReading(sensors_[i]);
         }
     }
+    return SensorReading(-1, "NotFound", 0, "NotFound");
 }
 
 
