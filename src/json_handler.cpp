@@ -3,7 +3,7 @@
 
 std::string JsonHandler::getJsonSensorsData(std::vector<SensorReading> current_sensor_readings)
 {
-    DynamicJsonDocument json(1024);
+    JsonDocument json;
 
     for (int i = 0; i < current_sensor_readings.size(); i++)
     {
@@ -22,35 +22,35 @@ std::string JsonHandler::getJsonSensorsData(std::vector<SensorReading> current_s
 TimeStamp JsonHandler::getTimeStamp(std::string time_stamp_string)
 {    
     TimeStamp timestamp;
-    timestamp.day = parseDay(std::stoi(str.substr(0, 2)));
-    timestamp.hour = std::stoi(str.substr(3, 2));
-    timestamp.minutes = std::stoi(str.substr(6, 2));
+    timestamp.day = parseDay(std::stoi(time_stamp_string.substr(0, 2)));
+    timestamp.hour = std::stoi(time_stamp_string.substr(3, 2));
+    timestamp.minutes = std::stoi(time_stamp_string.substr(6, 2));
 
     return timestamp;
 }
 
 
-TimeRange JsonHandler::parseTimeRange(JsonObject& json_time_range)
+TimeRange JsonHandler::parseTimeRange(const JsonObject& json_time_range)
 {
     TimeRange time_range;
-    time_range.begin_time_ = getTimeStamp(json_time_range["start"]);
-    time_range.end_time_ = getTimeStamp(json_time_range["end"]);
+    time_range.begin_time_ = getTimeStamp(json_time_range["start"].as<std::string>());
+    time_range.end_time_ = getTimeStamp(json_time_range["end"].as<std::string>());
     return time_range;
 }
 
 
-Quantity JsonHandler::parseQuantity(JsonObject& json_quantity)
+Quantity JsonHandler::parseQuantity(const JsonObject& json_quantity)
 {
     Quantity quantity;
-    quantity.magnitude_ = json_quantity["magnitude"];
-    quantity.unit_ = json_quantity["unit"];
+    quantity.magnitude_ = json_quantity["magnitude"].as<int>();
+    quantity.unit_ = parseUnit(json_quantity["unit"].as<int>());
     return quantity;
 }
 
 
-Entry JsonHandler::parseEntry(JsonObject& json_entry)
+Entry JsonHandler::parseEntry(const JsonObject& json_entry)
 {
-    return Entry(parseTimeRange(json_entry["interval"]), parseQuantity(json_entry["quantity"]));
+    return Entry(parseTimeRange(json_entry["interval"].as<JsonObject>()), parseQuantity(json_entry["quantity"].as<JsonObject>()));
 }
 
 
@@ -62,15 +62,23 @@ Program JsonHandler::parseProgram(std::string json)
     std::vector<Entry> entries;
 
     JsonDocument doc;
-    deserializeJson(doc, json);
-
-    type = doc["type"];
-    version_id = doc["id"];
-    mode = doc["mode"];
-
-    for (JsonVariant item: doc["entries"])
+    DeserializationError error = deserializeJson(doc, json);
+    if (error)
     {
-        entries.push_back(parseEntry(item))
+        // Обработка ошибки десериализации
+        Serial.print("Ошибка десериализации: ");
+        Serial.println(error.c_str());
+        return Program("", "", SettingMode(), {}); // Возвращаем пустой объект Program в случае ошибки
+    }
+
+    type = doc["type"].as<std::string>();
+    version_id = doc["id"].as<std::string>();
+    mode = parseSettingMode(doc["mode"].as<int>());
+
+    JsonArray entries_json_array = doc["entries"].as<JsonArray>();
+    for (const JsonVariant item : entries_json_array)
+    {
+        entries.push_back(parseEntry(item));
     }
 
     return Program(type, version_id, mode, entries);

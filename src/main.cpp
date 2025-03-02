@@ -1,36 +1,60 @@
 #include <Arduino.h>
 #include "sensor_handler.h"
-#include "sensor_info.h"
-
 #include "setting_handler.h"
 #include "module_functions.h"
+#include "json_handler.h"
 
-//#define THRESHOLD 300
-#define THRESHOLD 263
 
-//Setting smart_grow_hub();
+const char* json = R"({
+    "type": "dayLightComponent",
+    "version_id": "01JKY5E122HBQSZKXMF0F7HR44",
+    "mode": 1,
+    "entries": [
+        {
+            "quantity": {
+                "magnitude": 15,
+                "unit": 1
+            },
+            "interval": {
+                "start": "01T08:00",
+                "end": "02T08:00"
+            }
+        },
+        {
+            "quantity": {
+                "magnitude": 26,
+                "unit": "°C"
+            },
+            "interval": {
+                "start": "02T12:00",
+                "end": "02T23:00"
+            }
+        },
+        {
+            "quantity": {
+                "magnitude": 10,
+                "unit": "%"
+            },
+            "interval": {
+                "start": "04T12:00",
+                "end": "04T15:00"
+            }
+        }
+    ]
+})";
+
+
 SettingHandler modules;
 SensorHandler info;
+JsonHandler json_handler;
 
-void readAllSensors();
 
 void setup() {
-
     Serial.begin(115200);
-    //initialization_sensors();
-    initialization_module();
-    //info.addSensorInfo(SensorInfo(1, "RandomNumber", "$", readRandomNumber));
-    
-    std::string testJson = "[{\"Type\": \"Watering\",\"Components\": [{\"Type\": \"Mode\",\"Value\": 1}]}]";
-
-    modules.AddSetting(Setting("Led", blink));
-    modules.SetStringJson(testJson);
-    //modules.AddComponentToSetting("Led", Component("Mode", 1, ""));
-
+    modules.AddSetting(Setting(std::string("dayLightComponent"), blink, json_handler.parseProgram(std::string(json))));
 }
-   
+
+
 void loop() {
-    //Serial.println(info.getStringJson());
-    modules.CurateAllSetting();
-    delay(100);
+    modules.CurateSetting(std::string("dayLightComponent"));
 }

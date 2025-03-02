@@ -2,12 +2,11 @@
 
 #include <string>
 #include <vector>
+#include "setting_mode.h"
 #include "entry.h"
 #include "time_range.h"
 #include "Arduino.h"
 
-
-enum class SettingMode {Off, On, Cycle, Daily, Weekly};
 
 
 class Program
@@ -19,7 +18,8 @@ private:
     std::vector<Entry> entries_;
 
 public:
-    Program(std::string version_id, SettingMode mode, std::vector<Entry> entries);
+    Program(std::string type, std::string version_id, SettingMode mode, std::vector<Entry> entries);
+    Program();
 
     std::string GetType() const;
     std::string GetVersionId() const;

@@ -4,7 +4,7 @@
 enum class Day {AnyDay, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday};
 
 
-typedef struct TimeStamp
+struct TimeStamp
 {   
     Day day;
     int hour;

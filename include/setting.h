@@ -8,18 +8,15 @@
 #include "Arduino.h"
 
 
-enum class SettingMode {Off, On, Cycle, Daily, Weekly};
-
-
 class Setting
 {
 private:
     std::string type_;          // Module type (example: "heaterComponent")
     Program program_;
-    void (*module_function_) (int mode);
+    void (*module_function_) (SettingMode mode);
 
 public:
-    Setting(std::string type, void (*function) (int), Program program);
+    Setting(std::string type, void (*function) (SettingMode), Program program);
 
     std::string GetType() const;
     void SetProgram(Program program);

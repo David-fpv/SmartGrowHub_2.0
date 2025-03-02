@@ -2,7 +2,7 @@
 #include "time_stamp.h"
 
 
-typedef struct TimeRange
+struct TimeRange
 {
     TimeStamp begin_time_;
     TimeStamp end_time_;

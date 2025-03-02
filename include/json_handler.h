@@ -4,7 +4,7 @@
 #include <ArduinoJson.h>
 #include "program.h"
 #include "entry.h"
-#include "time_stamp.hpp"
+#include "time_stamp.h"
 #include "time_range.h"
 #include "quantity.h"
 #include "sensor_handler.h"
@@ -18,8 +18,8 @@ class JsonHandler
         //void getJsonSettings();        
 
     private:
-        Entry parseEntry(JsonObject& json_entry);
+        Entry parseEntry(const JsonObject& json_entry);
         TimeStamp getTimeStamp(std::string time_stamp_string);
-        TimeRange parseTimeRange(JsonObject& json_time_range);
-        Quantity parseQuantity(JsonObject& json_quantity);
+        TimeRange parseTimeRange(const JsonObject& json_time_range);
+        Quantity parseQuantity(const JsonObject& json_quantity);
 };

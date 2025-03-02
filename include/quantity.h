@@ -1,11 +1,10 @@
 #pragma once
-#include "string"
 
 
 enum class Unit {Percent = 1, Celsius, Unknown};
 
 
-typedef struct Quantity {
+struct Quantity {
     int magnitude_;
     Unit unit_;
 };

@@ -1,6 +1,14 @@
 #include "program.h"
 
 
+Program::Program()
+{
+    type_ = "";
+    version_id_ = "";
+    mode_ = SettingMode::Off;
+}
+
+
 Program::Program(std::string type, std::string version_id, SettingMode mode, std::vector<Entry> entries)
 {
     type_ = type;
