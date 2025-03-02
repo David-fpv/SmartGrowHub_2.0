@@ -7,20 +7,16 @@ void initialization_module()
     pinMode(PIN_LED, OUTPUT);
 }
 
-void blink(int mode)
+void blink(SettingMode mode)
 {
-    if (mode == 0)
+    if (mode == SettingMode::Off)
     {
         digitalWrite(PIN_LED, 0);
     }
-    else if (mode == 1)
+    else if (mode == SettingMode::On)
     {
         int time = millis() % 2000 / 1000;
         digitalWrite(PIN_LED, time);
-    }
-    else if (mode == 2)
-    {
-
     }
 }
 
