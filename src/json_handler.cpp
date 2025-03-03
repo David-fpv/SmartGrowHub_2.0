@@ -22,10 +22,9 @@ std::string JsonHandler::getJsonSensorsData(std::vector<SensorReading> current_s
 TimeStamp JsonHandler::getTimeStamp(std::string time_stamp_string)
 {    
     TimeStamp timestamp;
-    timestamp.day = parseDay(std::stoi(time_stamp_string.substr(0, 2)));
-    timestamp.hour = std::stoi(time_stamp_string.substr(3, 2));
-    timestamp.minutes = std::stoi(time_stamp_string.substr(6, 2));
-
+    timestamp.day_ = parseDay(std::stoi(time_stamp_string.substr(0, 2)));
+    timestamp.hour_ = std::stoi(time_stamp_string.substr(3, 2));
+    timestamp.minutes_ = std::stoi(time_stamp_string.substr(6, 2));
     return timestamp;
 }
 
@@ -43,7 +42,7 @@ Quantity JsonHandler::parseQuantity(const JsonObject& json_quantity)
 {
     Quantity quantity;
     quantity.magnitude_ = json_quantity["magnitude"].as<int>();
-    quantity.unit_ = parseUnit(json_quantity["unit"].as<int>());
+    quantity.unit_ = toUnit(json_quantity["unit"].as<int>());
     return quantity;
 }
 
@@ -65,15 +64,15 @@ Program JsonHandler::parseProgram(std::string json)
     DeserializationError error = deserializeJson(doc, json);
     if (error)
     {
-        // Обработка ошибки десериализации
-        Serial.print("Ошибка десериализации: ");
+        Serial.print("Deserialization error: ");
         Serial.println(error.c_str());
-        return Program("", "", SettingMode(), {}); // Возвращаем пустой объект Program в случае ошибки
+        return Program("", "", SettingMode::Off, {}); // Deserialization error handling
     }
 
     type = doc["type"].as<std::string>();
-    version_id = doc["id"].as<std::string>();
+    version_id = doc["version_id"].as<std::string>();
     mode = parseSettingMode(doc["mode"].as<int>());
+
 
     JsonArray entries_json_array = doc["entries"].as<JsonArray>();
     for (const JsonVariant item : entries_json_array)

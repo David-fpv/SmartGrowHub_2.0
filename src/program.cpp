@@ -3,8 +3,8 @@
 
 Program::Program()
 {
-    type_ = "";
-    version_id_ = "";
+    type_ = "-";
+    version_id_ = "-";
     mode_ = SettingMode::Off;
 }
 

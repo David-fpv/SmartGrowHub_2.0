@@ -15,8 +15,12 @@ void blink(SettingMode mode)
     }
     else if (mode == SettingMode::On)
     {
+        digitalWrite(PIN_LED, 1);
+    }
+    else if (mode == SettingMode::Cycle)
+    {
         int time = millis() % 2000 / 1000;
-        digitalWrite(PIN_LED, time);
+        digitalWrite(PIN_LED, static_cast<bool>(time));
     }
 }
 

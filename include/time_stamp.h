@@ -4,7 +4,7 @@
 
 struct TimeStamp
 {   
-    Day day;
-    int hour;
-    int minutes;
+    Day day_;
+    int hour_;
+    int minutes_;
 };
