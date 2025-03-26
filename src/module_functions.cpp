@@ -41,15 +41,6 @@ void blink(Program program, TimeStamp time_now)
             for (int i = 0; i < program.GetEntries().size(); i++)
             {
                 Entry entry = program.GetEntries()[i];
-                Serial.println("TimeBegin");
-                Serial.println(static_cast<int>(entry.GetTimeInterval().begin_time_.day_));
-                Serial.println(entry.GetTimeInterval().begin_time_.hour_);
-                Serial.println(entry.GetTimeInterval().begin_time_.minutes_);
-                
-                Serial.println("TimeEnd");
-                Serial.println(static_cast<int>(entry.GetTimeInterval().end_time_.day_));
-                Serial.println(entry.GetTimeInterval().end_time_.hour_);
-                Serial.println(entry.GetTimeInterval().end_time_.minutes_);
                 if (isHourAndMinute(entry.GetTimeInterval(), time_now))
                 {
                     if (entry.GetQuantity().unit_ == Unit::Percent)
@@ -66,6 +57,7 @@ void blink(Program program, TimeStamp time_now)
                     return;
                 }
             }
+            digitalWrite(pin, LOW);
             break;
         
         case static_cast<int>(SettingMode::Off):

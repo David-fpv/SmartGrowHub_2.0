@@ -2,7 +2,7 @@
 
 Entry::Entry(TimeRange time_interval, Quantity quantity)
 {
-    time_interval_ = time_interval_;
+    time_interval_ = time_interval;
     quantity_ = quantity;
 }
 
