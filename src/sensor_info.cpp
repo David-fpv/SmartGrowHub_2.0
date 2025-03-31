@@ -1,6 +1,6 @@
 #include "sensor_info.h"
 
-SensorInfo::SensorInfo(int sensor_id, std::string type, std::string unit, double (*function) ())
+SensorInfo::SensorInfo(int sensor_id, std::string type, std::string unit, float (*function) ())
 {
     sensor_id_ = sensor_id;
     type_ = type;
@@ -21,7 +21,7 @@ std::string SensorInfo::GetType()
 }
 
 
-double SensorInfo::GetValue()
+float SensorInfo::GetValue()
 {
     return function_();
 }

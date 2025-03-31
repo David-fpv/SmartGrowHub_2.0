@@ -22,7 +22,7 @@ SensorReading SensorHandler::getReading(int sensor_id)
 {
     for (int i = 0; i < sensors_.size(); i++)
     {
-        if (sensor_id == sensors_[i].GetSensorId())
+        if (sensors_[i].GetSensorId() == sensor_id)
         {
             return SensorReading(sensors_[i]);
         }
