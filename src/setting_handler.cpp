@@ -22,12 +22,12 @@ void  SettingHandler::SetProgram(Program program)
 void SettingHandler::CurateSetting(std::string type)
 {
     for (int i = 0; i < settings_.size(); i++)
-    {
+    {  
         if (settings_[i].GetType() == type)
         {
             settings_[i].adjust();
+            break;
         }
-        break;
     }
 }
 

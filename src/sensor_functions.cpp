@@ -7,8 +7,7 @@ GyverDS18Single ds(PIN_SOIL_TEMPERATURE);
 
 void initialization_sensors()
 {
-    
-    rtc.setTime(0, 20, 1, 2, 3, 2025);
+    //rtc.setTime(COMPILE_TIME);
     
     if (!bme.begin(0x76))
     {

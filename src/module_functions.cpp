@@ -41,7 +41,7 @@ void blink(Program program, TimeStamp time_now)
             for (int i = 0; i < program.GetEntries().size(); i++)
             {
                 Entry entry = program.GetEntries()[i];
-                if (isHourAndMinute(entry.GetTimeInterval(), time_now))
+                if (inHourAndMinute(entry.GetTimeInterval(), time_now))
                 {
                     if (entry.GetQuantity().unit_ == Unit::Percent)
                     {
@@ -107,7 +107,7 @@ void transistor_1 (Program program, TimeStamp time_now) // Daylight
             for (int i = 0; i < program.GetEntries().size(); i++)
             {
                 Entry entry = program.GetEntries()[i];
-                if (isHourAndMinute(entry.GetTimeInterval(), time_now))
+                if (inHourAndMinute(entry.GetTimeInterval(), time_now))
                 {
                     if (entry.GetQuantity().unit_ == Unit::Percent)
                     {
@@ -122,6 +122,7 @@ void transistor_1 (Program program, TimeStamp time_now) // Daylight
                     return;
                 }
             }
+            digitalWrite(pin, LOW);
             break;
         
         case static_cast<int>(SettingMode::Off):
@@ -146,7 +147,7 @@ void transistor_2 (Program program, TimeStamp time_now) // Phyto lighting
             for (int i = 0; i < program.GetEntries().size(); i++)
             {
                 Entry entry = program.GetEntries()[i];
-                if (isHourAndMinute(entry.GetTimeInterval(), time_now))
+                if (inHourAndMinute(entry.GetTimeInterval(), time_now))
                 {
                     if (entry.GetQuantity().unit_ == Unit::Percent)
                     {
@@ -161,6 +162,7 @@ void transistor_2 (Program program, TimeStamp time_now) // Phyto lighting
                     return;
                 }
             }
+            digitalWrite(pin, LOW);
             break;
         
         case static_cast<int>(SettingMode::Off):
@@ -187,11 +189,24 @@ void transistor_3 (Program program, TimeStamp time_now) // Heater
             for (int i = 0; i < program.GetEntries().size(); i++)
             {
                 Entry entry = program.GetEntries()[i];
-                if (isHourAndMinute(entry.GetTimeInterval(), time_now))
+                if (inHourAndMinute(entry.GetTimeInterval(), time_now))
                 {
-                    if (entry.GetQuantity().unit_ == Unit::Quantity)
+                    if (entry.GetQuantity().unit_ == Unit::Percent)
                     {
-                        if (entry.GetQuantity().magnitude_ - sensor_function() > inaccuracy)
+                        if (entry.GetQuantity().magnitude_ > 0)
+                        {                   
+                            digitalWrite(pin, HIGH);
+                        } else 
+                        {
+                            digitalWrite(pin, LOW);
+                        }
+                    }
+                    else if (entry.GetQuantity().unit_ == Unit::Quantity)
+                    {
+                        int sensor_data = sensor_function();
+                        Serial.print("Temperature: ");
+                        Serial.println(sensor_data);
+                        if (entry.GetQuantity().magnitude_ - sensor_data > inaccuracy)
                         {                   
                             digitalWrite(pin, HIGH);
                         } else 
@@ -202,6 +217,7 @@ void transistor_3 (Program program, TimeStamp time_now) // Heater
                     return;
                 }
             }
+            digitalWrite(pin, LOW);
             break;
         
         case static_cast<int>(SettingMode::Off):
@@ -228,7 +244,7 @@ void transistor_4 (Program program, TimeStamp time_now) // Air humidifier
             for (int i = 0; i < program.GetEntries().size(); i++)
             {
                 Entry entry = program.GetEntries()[i];
-                if (isHourAndMinute(entry.GetTimeInterval(), time_now))
+                if (inHourAndMinute(entry.GetTimeInterval(), time_now))
                 {
                     if (entry.GetQuantity().unit_ == Unit::Percent)
                     {
@@ -243,6 +259,7 @@ void transistor_4 (Program program, TimeStamp time_now) // Air humidifier
                     return;
                 }
             }
+            digitalWrite(pin, LOW);
             break;
         
         case static_cast<int>(SettingMode::Off):
@@ -267,7 +284,7 @@ void transistor_5 (Program program, TimeStamp time_now) // Fan
             for (int i = 0; i < program.GetEntries().size(); i++)
             {
                 Entry entry = program.GetEntries()[i];
-                if (isHourAndMinute(entry.GetTimeInterval(), time_now))
+                if (inHourAndMinute(entry.GetTimeInterval(), time_now))
                 {
                     if (entry.GetQuantity().unit_ == Unit::Percent)
                     {
@@ -282,6 +299,7 @@ void transistor_5 (Program program, TimeStamp time_now) // Fan
                     return;
                 }
             }
+            digitalWrite(pin, LOW);
             break;
         
         case static_cast<int>(SettingMode::Off):
@@ -308,7 +326,7 @@ void transistor_6 (Program program, TimeStamp time_now) // Wather pump
             for (int i = 0; i < program.GetEntries().size(); i++)
             {
                 Entry entry = program.GetEntries()[i];
-                if (isHourAndMinute(entry.GetTimeInterval(), time_now))
+                if (inHourAndMinute(entry.GetTimeInterval(), time_now))
                 {
                     if (entry.GetQuantity().unit_ == Unit::Percent)
                     {
@@ -323,6 +341,7 @@ void transistor_6 (Program program, TimeStamp time_now) // Wather pump
                     return;
                 }
             }
+            digitalWrite(pin, LOW);
             break;
         
         case static_cast<int>(SettingMode::Off):

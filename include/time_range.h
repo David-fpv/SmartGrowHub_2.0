@@ -10,6 +10,5 @@ struct TimeRange
 
 
 bool isDay (TimeRange schedule, TimeStamp some_time);
-bool isHour (TimeRange schedule, TimeStamp some_time);
-bool isMinute (TimeRange schedule, TimeStamp some_time);
-bool isHourAndMinute (TimeRange schedule, TimeStamp some_time);
+bool inHourAndMinute (TimeRange schedule, TimeStamp some_time);
+bool inTimeRange (TimeRange schedule, TimeStamp some_time);
