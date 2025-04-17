@@ -17,7 +17,7 @@ public:
     //void SaveJsonSetting(); // Functions for saving and loading settings to esp32 memory
     //void LoadJsonSetting(); 
 
-    void CurateSetting(std::string type);
+    void CurateSetting(char* type);
     void CurateAllSetting(); 
 
 private:

@@ -1,9 +1,9 @@
 #include "json_handler.h"
 
 
-std::string JsonHandler::getJsonSensorsData(std::vector<SensorReading> current_sensor_readings)
+char* JsonHandler::getJsonSensorsData(std::vector<SensorReading> current_sensor_readings)
 {
-    JsonDocument json;
+    StaticJsonDocument<100> json; // Надо больше!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     for (int i = 0; i < current_sensor_readings.size(); i++)
     {
@@ -13,9 +13,8 @@ std::string JsonHandler::getJsonSensorsData(std::vector<SensorReading> current_s
         json[i]["Unit"] = current_sensor_readings[i].GetUnit();
     }
 
-    std::string string_json;
-    serializeJson(json, string_json);
-    return string_json;
+    serializeJson(json, json_str_output_, sizeof(json_str_output_));
+    return json_str_output_;
 }
 
 
@@ -53,32 +52,34 @@ Entry JsonHandler::parseEntry(const JsonObject& json_entry)
 }
 
 
-Program JsonHandler::parseProgram(std::string json)
+Program JsonHandler::parseProgram(const char* json, uint16_t length)
 {
-    std::string type;
-    std::string version_id;
+    char type[20];
+    char version_id[30];
     SettingMode mode;
-    std::vector<Entry> entries;
 
-    JsonDocument doc;
-    DeserializationError error = deserializeJson(doc, json);
+    Entry entries[10];
+    int count_entries = 0;
+
+    StaticJsonDocument<4000> json_doc;
+    DeserializationError error = deserializeJson(json_doc, json);
+
     if (error)
     {
         Serial.print("Deserialization error: ");
         Serial.println(error.c_str());
-        return Program("", "", SettingMode::Off, {}); // Deserialization error handling
+        return Program(); // Deserialization error handling
     }
 
-    type = doc["type"].as<std::string>();
-    version_id = doc["version_id"].as<std::string>();
-    mode = parseSettingMode(doc["mode"].as<int>());
+    strcpy(type, json_doc["type"]);
+    strcpy(version_id, json_doc["version_id"]);
+    mode = parseSettingMode(json_doc["mode"].as<int>());
 
-
-    JsonArray entries_json_array = doc["entries"].as<JsonArray>();
-    for (const JsonVariant item : entries_json_array)
+    for (int i = 0; i < json_doc["entries"].size(), i < sizeof(entries)/sizeof(entries[0]); i++)
     {
-        entries.push_back(parseEntry(item));
+        entries[i] = parseEntry(json_doc["entries"][i]);
+        count_entries++;
     }
 
-    return Program(type, version_id, mode, entries);
+    return Program(type, version_id, mode, entries, count_entries);
 }

@@ -38,7 +38,7 @@ void blink(Program program, TimeStamp time_now)
             break;
         
         case static_cast<int>(SettingMode::Daily):
-            for (int i = 0; i < program.GetEntries().size(); i++)
+            for (int i = 0; i < program.GetCountEntries(); i++)
             {
                 Entry entry = program.GetEntries()[i];
                 if (inHourAndMinute(entry.GetTimeInterval(), time_now))
@@ -104,7 +104,7 @@ void transistor_1 (Program program, TimeStamp time_now) // Daylight
             break;
         
         case static_cast<int>(SettingMode::Daily):
-            for (int i = 0; i < program.GetEntries().size(); i++)
+            for (int i = 0; i < program.GetCountEntries(); i++)
             {
                 Entry entry = program.GetEntries()[i];
                 if (inHourAndMinute(entry.GetTimeInterval(), time_now))
@@ -144,7 +144,7 @@ void transistor_2 (Program program, TimeStamp time_now) // Phyto lighting
             break;
         
         case static_cast<int>(SettingMode::Daily):
-            for (int i = 0; i < program.GetEntries().size(); i++)
+            for (int i = 0; i < program.GetCountEntries(); i++)
             {
                 Entry entry = program.GetEntries()[i];
                 if (inHourAndMinute(entry.GetTimeInterval(), time_now))
@@ -186,7 +186,7 @@ void transistor_3 (Program program, TimeStamp time_now) // Heater
             break;
         
         case static_cast<int>(SettingMode::Daily):
-            for (int i = 0; i < program.GetEntries().size(); i++)
+            for (int i = 0; i < program.GetCountEntries(); i++)
             {
                 Entry entry = program.GetEntries()[i];
                 if (inHourAndMinute(entry.GetTimeInterval(), time_now))
@@ -241,7 +241,7 @@ void transistor_4 (Program program, TimeStamp time_now) // Air humidifier
             break;
         
         case static_cast<int>(SettingMode::Daily):
-            for (int i = 0; i < program.GetEntries().size(); i++)
+            for (int i = 0; i < program.GetCountEntries(); i++)
             {
                 Entry entry = program.GetEntries()[i];
                 if (inHourAndMinute(entry.GetTimeInterval(), time_now))
@@ -281,7 +281,7 @@ void transistor_5 (Program program, TimeStamp time_now) // Fan
             break;
         
         case static_cast<int>(SettingMode::Daily):
-            for (int i = 0; i < program.GetEntries().size(); i++)
+            for (int i = 0; i < program.GetCountEntries(); i++)
             {
                 Entry entry = program.GetEntries()[i];
                 if (inHourAndMinute(entry.GetTimeInterval(), time_now))
@@ -323,7 +323,7 @@ void transistor_6 (Program program, TimeStamp time_now) // Wather pump
             break;
         
         case static_cast<int>(SettingMode::Daily):
-            for (int i = 0; i < program.GetEntries().size(); i++)
+            for (int i = 0; i < program.GetCountEntries(); i++)
             {
                 Entry entry = program.GetEntries()[i];
                 if (inHourAndMinute(entry.GetTimeInterval(), time_now))

@@ -1,15 +1,15 @@
 #include "setting.h"
 
 
-Setting::Setting(std::string type, void (*function) (Program program, TimeStamp time_now), Program program)
+Setting::Setting(const char* type, void (*function) (Program program, TimeStamp time_now), Program program)
 {
-    type_ = type;
+    strcpy(type_, type);
     module_function_ = function;
-    program_ = program;
+    program_.Reset(program);
 }
 
 
-std::string Setting::GetType() const
+char* Setting::GetType() const
 {
     return type_;
 }

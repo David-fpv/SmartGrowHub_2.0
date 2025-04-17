@@ -6,6 +6,10 @@ Entry::Entry(TimeRange time_interval, Quantity quantity)
     quantity_ = quantity;
 }
 
+Entry::Entry()
+{
+}
+
 
 TimeRange Entry::GetTimeInterval() const
 {

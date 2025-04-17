@@ -1,22 +1,22 @@
 #pragma once
-#include <string>
+#include <string.h>
 
 class SensorInfo
 {
 private: 
 
     int sensor_id_;
-    std::string type_;
-    std::string unit_;
+    char* type_;
+    char* unit_;
     float (*function_) ();
 
 
 public:
 
-    SensorInfo(int sensor_id, std::string type, std::string unit, float (*function) ());
+    SensorInfo(int sensor_id, const char* type, const char* unit, float (*function) ());
 
     int GetSensorId();
-    std::string GetType();
-    std::string GetUnit();
+    char* GetType();
+    char* GetUnit();
     float GetValue();
 };

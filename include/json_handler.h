@@ -13,8 +13,8 @@
 class JsonHandler
 {
     public:
-        std::string getJsonSensorsData(std::vector<SensorReading>);
-        Program parseProgram(std::string json);
+        char* getJsonSensorsData(std::vector<SensorReading>);
+        Program parseProgram(const char* json, uint16_t length);
         //void getJsonSettings();        
 
     private:
@@ -22,4 +22,6 @@ class JsonHandler
         TimeStamp getTimeStamp(std::string time_stamp_string);
         TimeRange parseTimeRange(const JsonObject& json_time_range);
         Quantity parseQuantity(const JsonObject& json_quantity);
+        
+        char json_str_output_[10]; // Надо больше!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 };

@@ -1,28 +1,30 @@
 #pragma once
 
-#include <string>
-#include <vector>
+#include <string.h>
 #include "setting_mode.h"
 #include "entry.h"
 #include "time_range.h"
 #include "Arduino.h"
 
 
-
 class Program
 {
 private:   
-    std::string type_;
-    std::string version_id_;    // Version ID settings
+    char type_[20];
+    char version_id_[30];    // Version ID settings
     SettingMode mode_;
-    std::vector<Entry> entries_;
+    Entry entries_[10];
+    int count_entries_;
 
 public:
-    Program(std::string type, std::string version_id, SettingMode mode, std::vector<Entry> entries);
-    Program();
+    Program(char* type, char* version_id, SettingMode mode, Entry* entries, int count_entries);
+    Program(); // delete
+    Program(const Program &old_program);
+    void Reset(const Program &old_program);
 
     std::string GetType() const;
     std::string GetVersionId() const;
     SettingMode GetMode() const;
-    std::vector<Entry> GetEntries() const;
+    const Entry* GetEntries() const;
+    const int GetCountEntries() const;
 };

@@ -1,5 +1,5 @@
 #pragma once
-#include <string>
+#include <string.h>
 #include "sensor_info.h"
 
 /*char sensor_type[][16] {
@@ -20,17 +20,16 @@ class SensorReading
 {
 private: 
     int sensor_id_;
-    std::string type_;
-    double value_;
-    std::string unit_;
+    char* type_;
+    float value_;
+    char* unit_;
 
 public:
-    SensorReading(int sensor_id, std::string type, double value, std::string unit);
+    SensorReading(int sensor_id, const char* type, float value, const char* unit);
     SensorReading(SensorInfo sensor_info);
 
     int GetSensorId() const;
-    std::string GetType() const;
-    double GetValue() const;
-    std::string GetUnit() const;
-    
+    char* GetType() const;
+    float GetValue() const;
+    char* GetUnit() const;
 };

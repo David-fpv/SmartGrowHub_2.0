@@ -19,11 +19,11 @@ void  SettingHandler::SetProgram(Program program)
 }
 
 
-void SettingHandler::CurateSetting(std::string type)
+void SettingHandler::CurateSetting(char* type)
 {
     for (int i = 0; i < settings_.size(); i++)
     {  
-        if (settings_[i].GetType() == type)
+        if (strcmp(settings_[i].GetType(), type) == 0)
         {
             settings_[i].adjust();
             break;
@@ -37,5 +37,6 @@ void SettingHandler::CurateAllSetting()
     for (int i = 0; i < settings_.size(); i++)
     {
         settings_[i].adjust();
+        Serial.println(settings_[i].GetType());
     }
 }

@@ -1,11 +1,11 @@
 #include "sensor_info.h"
 
-SensorInfo::SensorInfo(int sensor_id, std::string type, std::string unit, float (*function) ())
+SensorInfo::SensorInfo(int sensor_id, const char* type, const  char* unit, float (*function) ())
 {
     sensor_id_ = sensor_id;
-    type_ = type;
+    strcpy(type_, type);
+    strcpy(unit_, unit);
     function_ = function;
-    unit_ = unit;
 }
 
 
@@ -15,19 +15,19 @@ int SensorInfo::GetSensorId()
 }
 
 
-std::string SensorInfo::GetType()
+char* SensorInfo::GetType()
 {
     return type_;
+}
+
+
+char* SensorInfo::GetUnit()
+{
+    return unit_;
 }
 
 
 float SensorInfo::GetValue()
 {
     return function_();
-}
-
-
-std::string SensorInfo::GetUnit()
-{
-    return unit_;
 }

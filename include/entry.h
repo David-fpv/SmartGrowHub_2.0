@@ -13,6 +13,7 @@ private:
 
 public:
     Entry(TimeRange time_interval, Quantity quantity);
+    Entry();
 
     TimeRange GetTimeInterval() const;
     Quantity GetQuantity() const;
