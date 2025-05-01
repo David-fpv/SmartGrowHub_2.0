@@ -60,7 +60,7 @@ Program JsonHandler::parseProgram(std::string json)
     SettingMode mode;
     std::vector<Entry> entries;
 
-    StaticJsonDocument<1000> doc;
+    StaticJsonDocument<2000> doc;
     DeserializationError error = deserializeJson(doc, json);
     if (error)
     {

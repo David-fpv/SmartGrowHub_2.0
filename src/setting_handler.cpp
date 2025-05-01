@@ -13,8 +13,8 @@ void  SettingHandler::SetProgram(Program program)
         if (settings_[i].GetType() == program.GetType())
         {
             settings_[i].SetProgram(program);
+            break;
         }
-        break;
     }
 }
 

@@ -68,28 +68,66 @@ void blink(Program program, TimeStamp time_now)
 }
 
 
-void servo (Program program, TimeStamp time_now)
+void servo_on_off (int mode)
 {
-    // static int angle = 10;
-    // if (mode > 0 && angle < 20)
-    // {
-    //     for (pos = 10; pos <= 90; pos += 1)
-    //     {
-    //         myservo.write(pos);
-    //         delay(20); 
-    //     }
-    //     angle = 90;
-    // }
+    static int angle = 10;
+    if (mode > 0 && angle < 80)
+    {
+        while(angle < 80)
+        {
+            angle++;
+            myservo.write(angle);
+            delay(10); 
+        }
+    }
     
-    // if (mode == 0 && angle > 80)
-    // {
-    //     for (pos = 90; pos >= 10; pos -= 1)
-    //     {
-    //         myservo.write(pos);
-    //         delay(20);
-    //     }
-    //     angle = 10;
-    // }
+    if (mode == 0 && angle > 20)
+    {
+        while(angle > 20)
+        {
+            angle--;
+            myservo.write(angle);
+            delay(10);
+        }
+    }
+}
+
+
+void servo (Program program, TimeStamp time_now) // AirFlap
+{
+    switch (static_cast<int>(program.GetMode()))
+    {        
+        case static_cast<int>(SettingMode::On):
+            servo_on_off(1);
+            break;
+        
+        case static_cast<int>(SettingMode::Daily):
+            for (int i = 0; i < program.GetEntries().size(); i++)
+            {
+                Entry entry = program.GetEntries()[i];
+                if (inHourAndMinute(entry.GetTimeInterval(), time_now))
+                {
+                    if (entry.GetQuantity().unit_ == Unit::Percent)
+                    {
+                        if (entry.GetQuantity().magnitude_ > 0)
+                        {                   
+                            servo_on_off(1);
+                        } else 
+                        {
+                            servo_on_off(0);
+                        }
+                    }
+                    return;
+                }
+            }
+            servo_on_off(0);
+            break;
+        
+        case static_cast<int>(SettingMode::Off):
+        default:    
+            servo_on_off(0);
+            break;
+    }
 }
 
 
@@ -310,9 +348,9 @@ void transistor_5 (Program program, TimeStamp time_now) // Fan
 }
 
 
-void transistor_6 (Program program, TimeStamp time_now) // Wather pump
+void transistor_7 (Program program, TimeStamp time_now) // Wather pump
 {
-    int pin = PIN_TRANSISTOR_6;
+    int pin = PIN_TRANSISTOR_7;
     int inaccuracy = 2;
     float (*sensor_function) () = readSoilMoisture;
 
