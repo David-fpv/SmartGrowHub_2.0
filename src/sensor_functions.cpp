@@ -3,7 +3,7 @@
 
 GyverBME280 bme;
 MicroDS3231 rtc;
-GyverDS18Single ds(PIN_SOIL_TEMPERATURE);
+GyverNTC therm(PIN_SOIL_TEMPERATURE, 10000, 3950, 25, 10000, 12);
 
 void initialization_sensors()
 {
@@ -16,8 +16,6 @@ void initialization_sensors()
 
     pinMode(PIN_HC_TRIG, OUTPUT); // trig выход
     pinMode(PIN_HC_ECHO, INPUT);  // echo вход
-  
-    ds.requestTemp(); // первый запрос на измерение ds18b20
   
     pinMode(PIN_LIGHT_SENSOR, INPUT);
     pinMode(PIN_SOIL_MOISTURE, INPUT);
@@ -65,17 +63,9 @@ float readDistance()
 }
 
 
-float readSoilTemprature() // возможно надо переделать вызов и принятие измерений (хрогологический порядок)
+float readSoilTemperature()
 {
-  if (ds.ready())
-  { // измерения готовы по таймеру
-    if (ds.readTemp())
-    { // если чтение успешно
-      return ds.getTemp();
-    }
-    ds.requestTemp(); // запрос следующего измерения
-  }
-  return 0;
+  return therm.getTempAverage();
 }
 
 

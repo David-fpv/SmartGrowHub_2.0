@@ -3,7 +3,7 @@
 
 std::string JsonHandler::getJsonSensorsData(std::vector<SensorReading> current_sensor_readings)
 {
-    JsonDocument json;
+    StaticJsonDocument<1000> json;
 
     for (int i = 0; i < current_sensor_readings.size(); i++)
     {
@@ -60,7 +60,7 @@ Program JsonHandler::parseProgram(std::string json)
     SettingMode mode;
     std::vector<Entry> entries;
 
-    JsonDocument doc;
+    StaticJsonDocument<1000> doc;
     DeserializationError error = deserializeJson(doc, json);
     if (error)
     {
