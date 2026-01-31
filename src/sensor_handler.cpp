@@ -1,17 +1,6 @@
 #include "sensor_handler.h"
 
 
-SensorHandler::SensorHandler()
-{
-}
-
-
-void SensorHandler::initialization()
-{
-    initialization();
-}
-
-
 void SensorHandler::addSensorInfo(SensorInfo sensor)
 {
     sensors_.push_back(sensor);

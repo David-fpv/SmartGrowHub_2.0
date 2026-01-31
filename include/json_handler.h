@@ -15,6 +15,8 @@ class JsonHandler
     public:
         std::string getJsonSensorsData(std::vector<SensorReading>);
         Program parseProgram(std::string json);
+        std::string parseType(std::string json);
+        int parseValue(std::string json);
         //void getJsonSettings();        
 
     private:

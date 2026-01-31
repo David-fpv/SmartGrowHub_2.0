@@ -14,15 +14,15 @@ class Setting
 {
 private:
     std::string type_;          // Module type (example: "heaterComponent")
-    Program program_;
-    void (*module_function_) (Program program, TimeStamp time_now);
+    int value_;
+    void (*module_function_) (int value); // example 0-255, 0 - off, 255 - on
 
 public:
-    Setting(std::string type, void (*function) (Program program, TimeStamp time_now), Program program);
+    Setting(std::string type, void (*function) (int value), int value);
 
     std::string GetType() const;
-    void SetProgram(Program program);
-    Program GetProgram() const;
+    void SetValue(int value);
+    int GetValue() const;
 
     void adjust();
 };

@@ -1,11 +1,11 @@
 #include "setting.h"
 
 
-Setting::Setting(std::string type, void (*function) (Program program, TimeStamp time_now), Program program)
+Setting::Setting(std::string type, void (*function) (int value), int value)
 {
     type_ = type;
     module_function_ = function;
-    program_ = program;
+    value_ = value;
 }
 
 
@@ -15,19 +15,19 @@ std::string Setting::GetType() const
 }
 
 
-void Setting::SetProgram(Program program)
+void Setting::SetValue(int value)
 {
-    program_ = program;
+    value_ = value;
 }
 
 
-Program Setting::GetProgram() const
+int Setting::GetValue() const
 {
-    return program_;
+    return value_;
 }
 
 
 void Setting::adjust()
 {
-    module_function_(program_, getTimeStamp());
+    module_function_(value_);
 }

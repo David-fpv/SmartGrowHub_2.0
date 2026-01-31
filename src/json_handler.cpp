@@ -82,3 +82,35 @@ Program JsonHandler::parseProgram(std::string json)
 
     return Program(type, version_id, mode, entries);
 }
+
+std::string JsonHandler::parseType(std::string json)
+{
+    StaticJsonDocument<200> doc;
+    DeserializationError error = deserializeJson(doc, json);
+    if (error)
+    {
+        Serial.print("Deserialization error: ");
+        Serial.println(error.c_str());
+        return std::string(""); // Deserialization error handling
+    }
+
+    std::string type = doc["type"].as<std::string>();
+
+    return type;
+}
+
+int JsonHandler::parseValue(std::string json)
+{
+    StaticJsonDocument<200> doc;
+    DeserializationError error = deserializeJson(doc, json);
+    if (error)
+    {
+        Serial.print("Deserialization error: ");
+        Serial.println(error.c_str());
+        return 0; // Deserialization error handling
+    }
+
+    int value = doc["value"].as<int>();
+
+    return value;
+}

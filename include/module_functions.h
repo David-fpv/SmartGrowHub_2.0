@@ -24,12 +24,12 @@
 
 void initialization_module();
 
-void blink(Program program, TimeStamp time_now);
-void servo (Program program, TimeStamp time_now);
+void blink(int value);
+void servo (int value);
 
-void transistor_1 (Program program, TimeStamp time_now);
-void transistor_2 (Program program, TimeStamp time_now);
-void transistor_3 (Program program, TimeStamp time_now);
-void transistor_4 (Program program, TimeStamp time_now);
-void transistor_5 (Program program, TimeStamp time_now);
-void transistor_7 (Program program, TimeStamp time_now);
+void transistor_1 (int value);
+void transistor_2 (int value);
+void transistor_3 (int value);
+void transistor_4 (int value);
+void transistor_5 (int value);
+void transistor_7 (int value);

@@ -10,11 +10,7 @@
 
 class SensorHandler
 {
-public: 
-
-    SensorHandler();
-
-    void initialization();
+public:
 
     void addSensorInfo(SensorInfo sensor);
 

@@ -13,33 +13,31 @@ SettingHandler modules;
 SensorHandler info;
 JsonHandler json_handler;
 
+// const char* json_dayLightComponent = R"({
+//     "type": "dayLight",
+//     "version_id": "01JKY5E122HBQSZKXMF0F7HR44",
+//     "mode": 3,
+//     "entries": [
+//         {
+//             "quantity": {
+//                 "magnitude": 15,
+//                 "unit": 1
+//             },
+//             "interval": {
+//                 "start": "01T00:00",
+//                 "end": "02T23:10"
+//             }
+//         }
+//     ]
+// })";
 
-const char* json_dayLightComponent = R"({
-    "type": "dayLight",
-    "version_id": "01JKY5E122HBQSZKXMF0F7HR44",
-    "mode": 3,
-    "entries": [
-        {
-            "quantity": {
-                "magnitude": 15,
-                "unit": 1
-            },
-            "interval": {
-                "start": "01T00:00",
-                "end": "02T23:10"
-            }
-        }
-    ]
-})";
 
-
-const char* json_default = R"({
-    "type": "default",
-    "version_id": "01JKY5E122HBQSZKXMF0F7HR44",
-    "mode": 0,
-    "entries": []
-})";
-
+// const char* json_default = R"({
+//     "type": "default",
+//     "version_id": "01JKY5E122HBQSZKXMF0F7HR44",
+//     "mode": 0,
+//     "entries": []
+// })";
 
 void setup() {
     delay(2500);
@@ -51,18 +49,18 @@ void setup() {
     setupWiFiMQTT();
     delay(100);
 
-    modules.AddSetting(Setting(std::string("dayLight"), transistor_1, json_handler.parseProgram(std::string(json_dayLightComponent))));
-    modules.AddSetting(Setting(std::string("uvLight"), transistor_2, json_handler.parseProgram(std::string(json_default))));
-    modules.AddSetting(Setting(std::string("heater"), transistor_3, json_handler.parseProgram(std::string(json_default))));
-    modules.AddSetting(Setting(std::string("humidifier"), transistor_4, json_handler.parseProgram(std::string(json_default))));
-    modules.AddSetting(Setting(std::string("fan"), transistor_5, json_handler.parseProgram(std::string(json_default))));
-    modules.AddSetting(Setting(std::string("waterPump"), transistor_7, json_handler.parseProgram(std::string(json_default))));
-    modules.AddSetting(Setting(std::string("airFlap"), servo, json_handler.parseProgram(std::string(json_default))));
+    modules.AddSetting(Setting(std::string("dayLight"), transistor_1, 0));
+    modules.AddSetting(Setting(std::string("uvLight"), transistor_2, 0));
+    modules.AddSetting(Setting(std::string("heater"), transistor_3, 0));
+    modules.AddSetting(Setting(std::string("humidifier"), transistor_4, 0));
+    modules.AddSetting(Setting(std::string("fan"), transistor_5, 1));
+    modules.AddSetting(Setting(std::string("waterPump"), transistor_7, 0));
+    modules.AddSetting(Setting(std::string("airFlap"), servo, 0));
 
 
     info.addSensorInfo(SensorInfo(1, "airTemperature", "C", readTemperatureBME));
     info.addSensorInfo(SensorInfo(2, "airHumidity", "%", readHumidityBME));
-    info.addSensorInfo(SensorInfo(3, "pressure", "Pa", readPressureBME));
+    info.addSensorInfo(SensorInfo(3, "airPressure", "Pa", readPressureBME));
     info.addSensorInfo(SensorInfo(4, "plantHeight", "cm", readDistance));
     info.addSensorInfo(SensorInfo(5, "light", "%", readLight));
     info.addSensorInfo(SensorInfo(6, "soilTemperature", "C", readSoilTemperature));

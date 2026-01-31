@@ -12,13 +12,10 @@ class SettingHandler
 public:
 
     void AddSetting(Setting setting);
-    void SetProgram(Program program);
-
-    //void SaveJsonSetting(); // Functions for saving and loading settings to esp32 memory
-    //void LoadJsonSetting(); 
+    void SetValue(std::string type, int value);
 
     void CurateSetting(std::string type);
-    void CurateAllSetting(); 
+    void CurateAllSetting();
 
 private:
     std::vector<Setting> settings_;

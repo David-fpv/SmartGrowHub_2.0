@@ -9,7 +9,7 @@
 
 
 // Wi-Fi settings
-const char* ssid = "David phone 2a";
+const char* ssid = "DAVID-laptop";
 const char* password = "qwerty555";
 
 // MQTT settings
@@ -47,7 +47,10 @@ void callback(char *topic, byte payload[], unsigned int length)
     }
     Serial.println();
 
-    modules_mqtt->SetProgram(json_mqtt_handler->parseProgram(message));
+    std::string type = json_mqtt_handler->parseType(message);
+    int value = json_mqtt_handler->parseValue(message);
+
+    modules_mqtt->SetValue(type, value);
 }
 
 
