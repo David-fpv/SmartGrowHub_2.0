@@ -40,7 +40,7 @@ JsonHandler json_handler;
 // })";
 
 void setup() {
-    delay(2500);
+    // delay(2500);
     Serial.begin(9600);
     initialization_sensors();
     initialization_module();
