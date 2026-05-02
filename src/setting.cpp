@@ -1,11 +1,11 @@
 #include "setting.h"
 
 
-Setting::Setting(std::string type, void (*function) (Program program, TimeStamp time_now), Program program)
+Setting::Setting(std::string type, SettingMode mode, void (*function) (Setting setting , TimeStamp time_now))
 {
     type_ = type;
+    mode_ = mode;
     module_function_ = function;
-    program_ = program;
 }
 
 
@@ -15,19 +15,41 @@ std::string Setting::GetType() const
 }
 
 
-void Setting::SetProgram(Program program)
+SettingMode Setting::GetMode() const
 {
-    program_ = program;
+    return mode_;
+}
+
+bool Setting::SetMode(SettingMode mode)
+{
+    mode_ = mode;
+    return true;
 }
 
 
-Program Setting::GetProgram() const
+Schedule Setting::GetSchedule() const
 {
-    return program_;
+    return schedule_;
+}
+
+
+bool Setting::ChangeScheduleUnit(std::string operate, ScheduleUnit unit)
+{
+    if (operate == "delete")
+    {
+        return schedule_.deleteScheduleUnit(unit.GetUnitId());
+    } 
+    else if (operate == "add") 
+    {
+        return schedule_.addScheduleUnit(unit);
+    }
+    
+    Serial.println("ChangeScheduleUnit: unknown operation");
+    return false;
 }
 
 
 void Setting::adjust()
 {
-    module_function_(program_, getTimeStamp());
+    module_function_(*this, getTimeStamp());
 }

@@ -4,11 +4,8 @@
 #include <microDS3231.h>
 #include <ESP32Servo.h>
 #include "sensor_functions.h"
-#include "program.h"
-#include "entry.h"
-#include "setting_mode.h"
+#include "setting.h"
 #include "time_range.h"
-#include "time_stamp.h"
 
 #define PIN_LED 2
 #define PIN_SERVO 23
@@ -21,15 +18,16 @@
 #define PIN_TRANSISTOR_6 27
 #define PIN_TRANSISTOR_7 26
 
+class Setting; // Forward declaration
 
 void initialization_module();
 
-void blink(Program program, TimeStamp time_now);
-void servo (Program program, TimeStamp time_now);
+void blink(Setting setting, TimeStamp time_some);
+void servo (Setting setting, TimeStamp time_now);
 
-void transistor_1 (Program program, TimeStamp time_now);
-void transistor_2 (Program program, TimeStamp time_now);
-void transistor_3 (Program program, TimeStamp time_now);
-void transistor_4 (Program program, TimeStamp time_now);
-void transistor_5 (Program program, TimeStamp time_now);
-void transistor_7 (Program program, TimeStamp time_now);
+void day_light_module_function (Setting setting, TimeStamp time_now);
+void transistor_2 (Setting setting, TimeStamp time_now);
+void transistor_3 (Setting setting, TimeStamp time_now);
+void transistor_4 (Setting setting, TimeStamp time_now);
+void transistor_5 (Setting setting, TimeStamp time_now);
+void transistor_7 (Setting setting, TimeStamp time_now);

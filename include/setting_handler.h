@@ -1,9 +1,9 @@
 #pragma once
 
 #include <vector>
-#include "program.h"
 #include "setting.h"
-#include "entry.h"
+#include "schedule.h"
+#include "schedule_unit.h"
 #include "module_functions.h"
 //#include "sensor_functions.h"
 
@@ -12,7 +12,8 @@ class SettingHandler
 public:
 
     void AddSetting(Setting setting);
-    void SetProgram(Program program);
+    bool ChangeScheduleUnit(std::string type, std::string operate, ScheduleUnit unit);
+    bool SetMode(std::string type, SettingMode mode);
 
     //void SaveJsonSetting(); // Functions for saving and loading settings to esp32 memory
     //void LoadJsonSetting(); 

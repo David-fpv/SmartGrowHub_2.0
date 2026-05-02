@@ -4,6 +4,7 @@
 #include <microDS3231.h>
 #include "GyverNTC.h"
 #include "time_stamp.h"
+#include "sensor_functions.h"
 
 
 #define PIN_HC_TRIG 33

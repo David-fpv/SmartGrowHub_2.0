@@ -4,8 +4,9 @@
 #include <string>
 #include <vector>
 #include "module_functions.h"
-#include "program.h"
-#include "entry.h"
+#include "sensor_functions.h"
+#include "schedule.h"
+#include "schedule_unit.h"
 #include "time_range.h"
 #include "time_stamp.h"
 
@@ -14,15 +15,18 @@ class Setting
 {
 private:
     std::string type_;          // Module type (example: "heaterComponent")
-    Program program_;
-    void (*module_function_) (Program program, TimeStamp time_now);
+    SettingMode mode_;
+    Schedule schedule_;
+    void (*module_function_) (Setting setting, TimeStamp time_now);
 
 public:
-    Setting(std::string type, void (*function) (Program program, TimeStamp time_now), Program program);
+    Setting(std::string type, SettingMode mode, void (*function) (Setting setting, TimeStamp time_now));
 
     std::string GetType() const;
-    void SetProgram(Program program);
-    Program GetProgram() const;
+    SettingMode GetMode() const;
+    bool SetMode(SettingMode mode);
+    Schedule GetSchedule() const;
+    bool ChangeScheduleUnit(std::string operate, ScheduleUnit unit);
 
     void adjust();
 };

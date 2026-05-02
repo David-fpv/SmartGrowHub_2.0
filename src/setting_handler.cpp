@@ -6,16 +6,33 @@ void SettingHandler::AddSetting(Setting setting)
 }
 
 
-void  SettingHandler::SetProgram(Program program)
+bool  SettingHandler::ChangeScheduleUnit(std::string type, std::string operate, ScheduleUnit unit)
 {
     for (int i = 0; i < settings_.size(); i++)
     {
-        if (settings_[i].GetType() == program.GetType())
+        if (type == settings_[i].GetType())
         {
-            settings_[i].SetProgram(program);
-            break;
+            return settings_[i].ChangeScheduleUnit(operate, unit);
         }
     }
+
+    Serial.println("ChangeScheduleUnit: non-existent setting");
+    return false;
+}
+
+
+bool SettingHandler::SetMode(std::string type, SettingMode mode)
+{
+    for (int i = 0; i < settings_.size(); i++)
+    {
+        if (type == settings_[i].GetType())
+        {
+            return settings_[i].SetMode(mode);
+        }
+    }
+
+    Serial.println("ChangeScheduleUnit: non-existent setting");
+    return false;
 }
 
 

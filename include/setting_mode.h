@@ -1,5 +1,5 @@
 #pragma once
 
-enum class SettingMode {Off, On, Cycle, Daily, Weekly};
+enum class SettingMode {Off, On, Auto, Daily, None};
 
 SettingMode parseSettingMode(int mode);

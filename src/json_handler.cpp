@@ -19,6 +19,20 @@ std::string JsonHandler::getJsonSensorsData(std::vector<SensorReading> current_s
 }
 
 
+std::string JsonHandler::getAnswerForMessage(std::string device_id, std::string message_id, int code)
+{
+    StaticJsonDocument<200> json;
+
+    json["device_id"] = device_id;
+    json["message_id"] = message_id;
+    json["code"] = code;
+
+    std::string string_json;
+    serializeJson(json, string_json);
+    return string_json;
+}
+
+
 TimeStamp JsonHandler::getTimeStamp(std::string time_stamp_string)
 {    
     TimeStamp timestamp;
@@ -47,38 +61,66 @@ Quantity JsonHandler::parseQuantity(const JsonObject& json_quantity)
 }
 
 
-Entry JsonHandler::parseEntry(const JsonObject& json_entry)
+ScheduleUnit JsonHandler::parseScheduleUnit(const JsonObject& json_schedule_unit)
 {
-    return Entry(parseTimeRange(json_entry["interval"].as<JsonObject>()), parseQuantity(json_entry["quantity"].as<JsonObject>()));
+    std::string shedule_unit_id = json_schedule_unit["schedule_unit_id"].as<std::string>();
+    UnitKind kind               = parseUnitKind(json_schedule_unit["kind"].as<std::string>());
+    TimeRange interval          = parseTimeRange(json_schedule_unit["interval"].as<JsonObject>());
+    Quantity quantity           = parseQuantity(json_schedule_unit["quantity"].as<JsonObject>());
+    
+    return ScheduleUnit(shedule_unit_id, kind, interval, quantity);
 }
 
-
-Program JsonHandler::parseProgram(std::string json)
+std::string JsonHandler::parseMessage(std::string json, std::string device_id, SettingHandler *modules)
 {
-    std::string type;
-    std::string version_id;
+    std::string message_id;
     SettingMode mode;
-    std::vector<Entry> entries;
+    std::string action;
+    std::string type;
 
-    StaticJsonDocument<2000> doc;
+    // OUPUT_CODES:
+    //  2 - Success ScheduleUnit
+    //  1 - Success set mode
+    // -1 - Can't set mode
+    // -2 - Can't set ScheduleUnit (delete/add)
+    // -3 - Wrong device_id
+    // -4 - Deserilization error
+
+    StaticJsonDocument<600> doc;
     DeserializationError error = deserializeJson(doc, json);
     if (error)
     {
+        std::string message = getAnswerForMessage(device_id, "000000", -4);
         Serial.print("Deserialization error: ");
         Serial.println(error.c_str());
-        return Program("", "", SettingMode::Off, {}); // Deserialization error handling
+        return message; // Deserialization error handling
     }
 
-    type = doc["type"].as<std::string>();
-    version_id = doc["version_id"].as<std::string>();
-    mode = parseSettingMode(doc["mode"].as<int>());
-
-
-    JsonArray entries_json_array = doc["entries"].as<JsonArray>();
-    for (const JsonVariant item : entries_json_array)
+    if (doc["device_id"].as<std::string>() != device_id)
     {
-        entries.push_back(parseEntry(item));
+        message_id = doc["message_id"].as<std::string>();
+        std::string message = getAnswerForMessage(device_id, message_id, -3);
+
+        Serial.println("parseMessage: unsuitable identification number");
+        return message;
     }
 
-    return Program(type, version_id, mode, entries);
+    message_id  =   doc["message_id"].as<std::string>();
+    mode        =   parseSettingMode(doc["mode"].as<int>());
+    action      =   doc["action"].as<std::string>();
+    type        =   doc["type"].as<std::string>();
+
+    int code = 0;
+
+    if (mode == SettingMode::None)
+    {
+        ScheduleUnit unit = parseScheduleUnit(doc["schedule_unit"].as<JsonObject>());
+        code = modules->ChangeScheduleUnit(type, action, unit) ? 2 : -2;
+        std::string message = getAnswerForMessage(device_id, message_id, code);
+        return message;
+    }
+
+    code = modules->SetMode(type, mode) ? 1 : -1;
+    std::string message = getAnswerForMessage(device_id, message_id, code);
+    return message;
 }

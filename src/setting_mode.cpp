@@ -7,9 +7,8 @@ SettingMode parseSettingMode(int mode)
     {
     case 0: return SettingMode::Off;
     case 1: return SettingMode::On;
-    case 2: return SettingMode::Cycle;
+    case 2: return SettingMode::Auto;
     case 3: return SettingMode::Daily;
-    case 4: return SettingMode::Weekly;
-    default: return SettingMode::Off;
+    default: return SettingMode::None;
     }
 }
