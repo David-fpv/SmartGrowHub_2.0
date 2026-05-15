@@ -11,17 +11,17 @@
 std::string device_id = "A0001";
 
 const WifiMqttManager::Config mqtt_config = {
-    .ssid              = "DAVID-laptop",
-    .password          = "qwerty555",
-    .server            = "broker.emqx.io",
-    .port              = 1883,
-    .user              = "",
-    .mqtt_pass         = "",
-    .topic_sensors     = "/Gomel/Tar/sensors/",
-    .topic_modules     = "/Gomel/Tar/modules/",
-    .max_wifi_attempts = 20,
-    .max_mqtt_attempts = 10,
-    .mqtt_buffer_size  = 1000,
+    /* ssid             */ "DAVID-laptop",
+    /* password         */ "qwerty555",
+    /* server           */ "broker.emqx.io",
+    /* port             */ 1883,
+    /* user             */ "",
+    /* mqtt_pass        */ "",
+    /* topic_sensors    */ "/Gomel/Tar/sensors/",
+    /* topic_modules    */ "/Gomel/Tar/modules/",
+    /* max_wifi_attempts*/ 20,
+    /* max_mqtt_attempts*/ 10,
+    /* mqtt_buffer_size */ 1000,
 };
 
 // Objects
@@ -67,14 +67,14 @@ void setup() {
     WifiMqttManager::instance().setup();
     delay(100);
 
-    modules.AddSetting( Setting(std::string("led"),         SettingMode::Off,   blink));
-    modules.AddSetting( Setting(std::string("dayLight"),    SettingMode::Off,   dayLight));
-    modules.AddSetting( Setting(std::string("uvLight"),     SettingMode::Off,   phytoLight));
-    modules.AddSetting( Setting(std::string("heater"),      SettingMode::Off,   heater));
-    modules.AddSetting( Setting(std::string("humidifier"),  SettingMode::Off,   airHumidifier));
-    modules.AddSetting( Setting(std::string("fan"),         SettingMode::Off,   fan));
-    modules.AddSetting( Setting(std::string("waterPump"),   SettingMode::Off,   waterPump));
-    modules.AddSetting( Setting(std::string("airFlap"),     SettingMode::Off,   servo));
+    modules.AddSetting( Setting(ModuleType::Led,        SettingMode::Off,   blink));
+    modules.AddSetting( Setting(ModuleType::DayLight,   SettingMode::Off,   dayLight));
+    modules.AddSetting( Setting(ModuleType::UvLight,    SettingMode::Off,   phytoLight));
+    modules.AddSetting( Setting(ModuleType::Heater,     SettingMode::Off,   heater));
+    modules.AddSetting( Setting(ModuleType::Humidifier, SettingMode::Off,   airHumidifier));
+    modules.AddSetting( Setting(ModuleType::Fan,        SettingMode::Off,   fan));
+    modules.AddSetting( Setting(ModuleType::WaterPump,  SettingMode::Off,   waterPump));
+    modules.AddSetting( Setting(ModuleType::AirFlap,    SettingMode::Off,   servo));
 
 
     info.addSensorInfo( SensorInfo(  1,  "airTemperature",   "C",    readTemperatureBME));

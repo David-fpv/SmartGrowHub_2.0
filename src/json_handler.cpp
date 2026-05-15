@@ -76,7 +76,7 @@ std::string JsonHandler::parseMessage(std::string json, std::string device_id, S
     std::string message_id;
     SettingMode mode;
     std::string action;
-    std::string type;
+    ModuleType type;
 
     // OUPUT_CODES:
     //  2 - Success set ScheduleUnit
@@ -108,7 +108,7 @@ std::string JsonHandler::parseMessage(std::string json, std::string device_id, S
     message_id  =   doc["message_id"].as<std::string>();
     mode        =   parseSettingMode(doc["mode"].as<int>());
     action      =   doc["action"].as<std::string>();
-    type        =   doc["type"].as<std::string>();
+    type        =   moduleTypeFromString(doc["type"].as<std::string>());
 
     int code = 0;
 

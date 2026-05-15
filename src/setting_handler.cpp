@@ -6,7 +6,7 @@ void SettingHandler::AddSetting(Setting setting)
 }
 
 
-bool  SettingHandler::ChangeScheduleUnit(std::string type, std::string operate, ScheduleUnit unit)
+bool SettingHandler::ChangeScheduleUnit(ModuleType type, std::string operate, ScheduleUnit unit)
 {
     for (int i = 0; i < settings_.size(); i++)
     {
@@ -21,7 +21,7 @@ bool  SettingHandler::ChangeScheduleUnit(std::string type, std::string operate, 
 }
 
 
-bool SettingHandler::SetMode(std::string type, SettingMode mode)
+bool SettingHandler::SetMode(ModuleType type, SettingMode mode)
 {
     for (int i = 0; i < settings_.size(); i++)
     {
@@ -36,7 +36,7 @@ bool SettingHandler::SetMode(std::string type, SettingMode mode)
 }
 
 
-void SettingHandler::CurateSetting(std::string type)
+void SettingHandler::CurateSetting(ModuleType type)
 {
     for (int i = 0; i < settings_.size(); i++)
     {  

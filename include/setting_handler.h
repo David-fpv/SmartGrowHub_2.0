@@ -12,13 +12,13 @@ class SettingHandler
 public:
 
     void AddSetting(Setting setting);
-    bool ChangeScheduleUnit(std::string type, std::string operate, ScheduleUnit unit);
-    bool SetMode(std::string type, SettingMode mode);
+    bool ChangeScheduleUnit(ModuleType type, std::string operate, ScheduleUnit unit);
+    bool SetMode(ModuleType type, SettingMode mode);
 
     //void SaveJsonSetting(); // Functions for saving and loading settings to esp32 memory
-    //void LoadJsonSetting(); 
+    //void LoadJsonSetting();
 
-    void CurateSetting(std::string type);
+    void CurateSetting(ModuleType type);
     void CurateAllSetting(); 
 
 private:

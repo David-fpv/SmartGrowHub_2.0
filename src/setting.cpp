@@ -1,7 +1,7 @@
 #include "setting.h"
 
 
-Setting::Setting(std::string type, SettingMode mode, void (*function) (Setting setting , TimeStamp time_now))
+Setting::Setting(ModuleType type, SettingMode mode, void (*function) (Setting setting, TimeStamp time_now))
 {
     type_ = type;
     mode_ = mode;
@@ -9,7 +9,7 @@ Setting::Setting(std::string type, SettingMode mode, void (*function) (Setting s
 }
 
 
-std::string Setting::GetType() const
+ModuleType Setting::GetType() const
 {
     return type_;
 }

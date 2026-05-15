@@ -18,9 +18,9 @@ public:
         const char* mqtt_pass;
         const char* topic_sensors;
         const char* topic_modules;
-        int         max_wifi_attempts = 20;
-        int         max_mqtt_attempts = 10;
-        int         mqtt_buffer_size  = 1000;
+        int         max_wifi_attempts;
+        int         max_mqtt_attempts;
+        int         mqtt_buffer_size;
     };
 
     static WifiMqttManager& instance() {
