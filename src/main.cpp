@@ -10,6 +10,20 @@
 
 std::string device_id = "A0001";
 
+const WifiMqttManager::Config mqtt_config = {
+    .ssid              = "DAVID-laptop",
+    .password          = "qwerty555",
+    .server            = "broker.emqx.io",
+    .port              = 1883,
+    .user              = "",
+    .mqtt_pass         = "",
+    .topic_sensors     = "/Gomel/Tar/sensors/",
+    .topic_modules     = "/Gomel/Tar/modules/",
+    .max_wifi_attempts = 20,
+    .max_mqtt_attempts = 10,
+    .mqtt_buffer_size  = 1000,
+};
+
 // Objects
 SettingHandler modules;
 SensorHandler info;
@@ -49,8 +63,8 @@ void setup() {
     initialization_sensors();
     initialization_module();
     delay(100);
-    injectMqttDependencies(&modules, &json_handler, device_id);
-    setupWiFiMQTT();
+    WifiMqttManager::instance().init(&modules, &json_handler, device_id, mqtt_config);
+    WifiMqttManager::instance().setup();
     delay(100);
 
     modules.AddSetting( Setting(std::string("led"),         SettingMode::Off,   blink));
@@ -77,7 +91,7 @@ void setup() {
 long long previousTime_1 = millis();
 long long previousTime_2 = millis();
 void loop() {
-    wifi_mqtt_loop();
+    WifiMqttManager::instance().loop();
 
     if (previousTime_1 + 100 < millis())
     {
@@ -91,7 +105,7 @@ void loop() {
         
         std::string message = json_handler.getJsonSensorsData(info.getAllReadings());
         Serial.println(message.c_str());
-        mqttPublishInfo(json_handler.getJsonSensorsData(info.getAllReadings()));
+        WifiMqttManager::instance().publishInfo(json_handler.getJsonSensorsData(info.getAllReadings()));
         printTime();
     }    
 }

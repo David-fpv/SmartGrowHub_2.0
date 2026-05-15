@@ -7,179 +7,121 @@
 #include "setting_handler.h"
 #include "json_handler.h"
 
-// Wi-Fi settings
-const char *ssid = "DAVID-laptop";
-const char *password = "qwerty555";
-const int max_connection_attempt_wifi = 20;
+class WifiMqttManager {
+public:
+    struct Config {
+        const char* ssid;
+        const char* password;
+        const char* server;
+        int         port;
+        const char* user;
+        const char* mqtt_pass;
+        const char* topic_sensors;
+        const char* topic_modules;
+        int         max_wifi_attempts = 20;
+        int         max_mqtt_attempts = 10;
+        int         mqtt_buffer_size  = 1000;
+    };
 
-// MQTT settings
-const char *mqttServer = "broker.emqx.io";
-const int mqttPort = 1883;
-const char *mqttUser = "";     // Set it if necessary
-const char *mqttPassword = ""; // Set it if necessary
-const int max_connection_attempt_mqtt = 10;
-
-// Objects
-WiFiClient espClient;
-PubSubClient client(espClient);
-JsonHandler *json_mqtt_handler;
-SettingHandler *modules_mqtt;
-std::string device_id_number;
-
-void callback(char *topic, byte payload[], unsigned int length);
-bool connectToWiFi();
-bool connectToMQTT();
-void setupWiFiMQTT();
-bool WiFiMQTT_connecter();
-void mqttPublishInfo(std::string message);
-void mqttPublish(std::string topic, std::string message);
-void wifi_mqtt_loop();
-void injectMqttDependencies(SettingHandler *modules, JsonHandler *json_handler);
-
-void callback(char *topic, byte payload[], unsigned int length)
-{
-    std::string message;
-    Serial.print("Topic: ");
-    Serial.println(topic);
-
-    Serial.print("Message: ");
-    for (int i = 0; i < length; i++)
-    {
-        Serial.print((char)payload[i]);
-        message += (char)payload[i];
+    static WifiMqttManager& instance() {
+        static WifiMqttManager inst;
+        return inst;
     }
-    Serial.println();
 
-    std::string output_message = json_mqtt_handler->parseMessage(message, device_id_number, modules_mqtt);
-    mqttPublish("/Gomel/Tar/sensors/", output_message);
-}
+    WifiMqttManager(const WifiMqttManager&) = delete;
+    WifiMqttManager& operator=(const WifiMqttManager&) = delete;
 
-void injectMqttDependencies(SettingHandler *modules, JsonHandler *json_handler, std::string device_id)
-{
-    modules_mqtt = modules;
-    json_mqtt_handler = json_handler;
-    device_id_number = device_id;
-}
+    void init(SettingHandler* modules, JsonHandler* json_handler,
+              const std::string& device_id, const Config& config) {
+        modules_      = modules;
+        json_handler_ = json_handler;
+        device_id_    = device_id;
+        config_       = config;
+    }
 
-bool connectToWiFi()
-{
-    int attempt_count = 0;
+    void setup() {
+        client_.setServer(config_.server, config_.port);
+        client_.setCallback(mqttCallback);
+        client_.setBufferSize(config_.mqtt_buffer_size);
+        ensureConnected();
+    }
 
-    // Check connection to WiFi
-    if (WiFi.status() != WL_CONNECTED)
-    {
-        WiFi.begin(ssid, password);
+    void loop() {
+        client_.loop();
+        ensureConnected();
+    }
 
-        while ((WiFi.status() != WL_CONNECTED) && (attempt_count <= max_connection_attempt_wifi))
-        {
-            attempt_count++;
-            Serial.print("connectToWiFi: ");
-            Serial.print(attempt_count + 1);
-            Serial.println(". Connecting to Wi-Fi...");
+    void publish(const std::string& topic, const std::string& message) {
+        ensureConnected();
+        client_.publish(topic.c_str(), message.c_str());
+    }
+
+    void publishInfo(const std::string& message) {
+        publish(config_.topic_sensors, message);
+    }
+
+    void handleMessage(const char* topic, byte* payload, unsigned int length) {
+        std::string message(reinterpret_cast<const char*>(payload), length);
+        Serial.print("Topic: ");   Serial.println(topic);
+        Serial.print("Message: "); Serial.println(message.c_str());
+
+        std::string response = json_handler_->parseMessage(message, device_id_, modules_);
+        publish(config_.topic_sensors, response);
+    }
+
+private:
+    WiFiClient     espClient_;
+    PubSubClient   client_;
+    JsonHandler*   json_handler_ = nullptr;
+    SettingHandler* modules_     = nullptr;
+    std::string    device_id_;
+    Config         config_       = {};
+
+    WifiMqttManager() : client_(espClient_) {}
+
+    bool connectToWiFi() {
+        if (WiFi.status() == WL_CONNECTED) return true;
+
+        WiFi.begin(config_.ssid, config_.password);
+        for (int attempt = 0; attempt < config_.max_wifi_attempts && WiFi.status() != WL_CONNECTED; attempt++) {
+            Serial.printf("connectToWiFi: attempt %d...\n", attempt + 1);
             delay(500);
         }
 
-        if (WiFi.status() != WL_CONNECTED)
-        {
-            Serial.println("connectToWiFi: Couldn't connect to Wi-Fi");
+        if (WiFi.status() != WL_CONNECTED) {
+            Serial.println("connectToWiFi: failed");
             return false;
         }
+        Serial.println("connectToWiFi: connected");
+        return true;
     }
-    Serial.println("connectToWiFi: Wi-Fi connected");
-    return true;
-}
 
-bool connectToMQTT()
-{
-    int attempt_count = 0;
-    bool flag = true;
-    while (!client.connected() && (attempt_count < max_connection_attempt_mqtt))
-    {
-        Serial.println("Connecting to MQTT...");
-        if (client.connect("ESP32_Client", mqttUser, mqttPassword))
-        {
-            Serial.println("MQtt connected!");
-            client.subscribe("/Gomel/Tar/modules/");
-            Serial.println("The subscription was completed successfully");
-            flag = true;
-            break;
-        }
-        else
-        {
-            Serial.print("connectToMQTT: ");
-            Serial.print(attempt_count + 1);
-            Serial.print(". MQTT error connect: ");
-            Serial.println(client.state());
-            attempt_count++;
-            flag = false;
+    bool connectToMQTT() {
+        std::string clientId = "ESP32_" + device_id_;
+        for (int attempt = 0; attempt < config_.max_mqtt_attempts && !client_.connected(); attempt++) {
+            Serial.printf("connectToMQTT: attempt %d...\n", attempt + 1);
+            if (client_.connect(clientId.c_str(), config_.user, config_.mqtt_pass)) {
+                client_.subscribe(config_.topic_modules);
+                Serial.println("connectToMQTT: connected");
+                return true;
+            }
+            Serial.printf("connectToMQTT: failed, state=%d\n", client_.state());
             delay(2000);
         }
-    }
-
-    if (flag == false)
-    {
-        Serial.println("connectToMQTT: Couldn't connect to MQTT");
-        return false;
-    }
-
-    Serial.println("connectToMQTT: MQTT connected");
-    return true;
-}
-
-void setupWiFiMQTT()
-{
-    // MQTT settings
-    client.setServer(mqttServer, mqttPort);
-    client.setCallback(callback); // Set callback function
-    client.setBufferSize(1000);
-
-    WiFiMQTT_connecter();
-}
-
-bool WiFiMQTT_connecter()
-{
-    if (WiFi.status() != WL_CONNECTED)
-    {
-        if (connectToWiFi() == false)
-        {
+        if (!client_.connected()) {
+            Serial.println("connectToMQTT: couldn't connect");
             return false;
         }
+        return true;
     }
 
-    if (!client.connected())
-    {
-        return connectToMQTT();
+    bool ensureConnected() {
+        if (WiFi.status() != WL_CONNECTED && !connectToWiFi()) return false;
+        if (!client_.connected()) return connectToMQTT();
+        return true;
     }
 
-    return true;
-}
-
-void mqttPublishInfo(std::string message)
-{
-    Serial.print("WiFi status: ");
-    Serial.println(WiFi.status() == WL_CONNECTED);
-
-    Serial.print("MQTT status: ");
-    Serial.println(client.connected());
-
-    WiFiMQTT_connecter();
-    client.publish("/Gomel/Tar/sensors/", message.c_str());
-}
-
-void mqttPublish(std::string topic, std::string message)
-{
-    Serial.print("WiFi status: ");
-    Serial.println(WiFi.status() == WL_CONNECTED);
-
-    Serial.print("MQTT status: ");
-    Serial.println(client.connected());
-
-    WiFiMQTT_connecter();
-    client.publish(topic.c_str(), message.c_str());
-}
-
-void wifi_mqtt_loop()
-{
-    client.loop();
-    WiFiMQTT_connecter();
-}
+    static void mqttCallback(char* topic, byte* payload, unsigned int length) {
+        instance().handleMessage(topic, payload, length);
+    }
+};
