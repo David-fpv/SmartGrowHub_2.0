@@ -21,16 +21,16 @@ class SensorReading
 private: 
     int sensor_id_;
     std::string type_;
-    double value_;
+    float value_;
     std::string unit_;
 
 public:
-    SensorReading(int sensor_id, std::string type, double value, std::string unit);
+    SensorReading(int sensor_id, std::string type, float value, std::string unit);
     SensorReading(SensorInfo sensor_info);
 
     int GetSensorId() const;
     std::string GetType() const;
-    double GetValue() const;
+    float GetValue() const;
     std::string GetUnit() const;
     
 };

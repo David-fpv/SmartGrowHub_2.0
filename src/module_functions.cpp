@@ -113,7 +113,7 @@ void servo (Setting setting, TimeStamp time_now) // AirFlap
 }
 
 
-void day_light_module_function (Setting setting, TimeStamp time_now) // Daylight
+void dayLight (Setting setting, TimeStamp time_now) // Daylight
 {
     int pin = PIN_TRANSISTOR_1;
 
@@ -185,7 +185,7 @@ void day_light_module_function (Setting setting, TimeStamp time_now) // Daylight
 }
 
 
-void transistor_2 (Setting setting, TimeStamp time_now) // Phyto lighting
+void phytoLight (Setting setting, TimeStamp time_now) // Phyto lighting
 {
     int pin = PIN_TRANSISTOR_2;
     digitalWrite(pin, LOW);
@@ -226,7 +226,7 @@ void transistor_2 (Setting setting, TimeStamp time_now) // Phyto lighting
 }
 
 
-void transistor_3 (Setting setting, TimeStamp time_now) // Heater
+void heater (Setting setting, TimeStamp time_now) // Heater
 {
     int pin = PIN_TRANSISTOR_3;
     digitalWrite(pin, LOW);
@@ -282,7 +282,7 @@ void transistor_3 (Setting setting, TimeStamp time_now) // Heater
 }
 
 
-void transistor_4 (Setting setting, TimeStamp time_now) // Air humidifier
+void airHumidifier (Setting setting, TimeStamp time_now) // Air humidifier
 {
     int pin = PIN_TRANSISTOR_4;
     digitalWrite(pin, LOW);
@@ -325,7 +325,7 @@ void transistor_4 (Setting setting, TimeStamp time_now) // Air humidifier
 }
 
 
-void transistor_5 (Setting setting, TimeStamp time_now) // Fan
+void fan (Setting setting, TimeStamp time_now) // Fan
 {
     int pin = PIN_TRANSISTOR_5;
     digitalWrite(pin, LOW);
@@ -366,7 +366,7 @@ void transistor_5 (Setting setting, TimeStamp time_now) // Fan
 }
 
 
-void transistor_7 (Setting setting, TimeStamp time_now) // Wather pump
+void waterPump (Setting setting, TimeStamp time_now) // Wather pump
 {
     int pin = PIN_TRANSISTOR_7;
     digitalWrite(pin, LOW);

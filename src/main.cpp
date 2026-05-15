@@ -54,12 +54,12 @@ void setup() {
     delay(100);
 
     modules.AddSetting( Setting(std::string("led"),         SettingMode::Off,   blink));
-    modules.AddSetting( Setting(std::string("dayLight"),    SettingMode::Off,   day_light_module_function));
-    modules.AddSetting( Setting(std::string("uvLight"),     SettingMode::Off,   transistor_2));
-    modules.AddSetting( Setting(std::string("heater"),      SettingMode::Off,   transistor_3));
-    modules.AddSetting( Setting(std::string("humidifier"),  SettingMode::Off,   transistor_4));
-    modules.AddSetting( Setting(std::string("fan"),         SettingMode::Off,   transistor_5));
-    modules.AddSetting( Setting(std::string("waterPump"),   SettingMode::Off,   transistor_7));
+    modules.AddSetting( Setting(std::string("dayLight"),    SettingMode::Off,   dayLight));
+    modules.AddSetting( Setting(std::string("uvLight"),     SettingMode::Off,   phytoLight));
+    modules.AddSetting( Setting(std::string("heater"),      SettingMode::Off,   heater));
+    modules.AddSetting( Setting(std::string("humidifier"),  SettingMode::Off,   airHumidifier));
+    modules.AddSetting( Setting(std::string("fan"),         SettingMode::Off,   fan));
+    modules.AddSetting( Setting(std::string("waterPump"),   SettingMode::Off,   waterPump));
     modules.AddSetting( Setting(std::string("airFlap"),     SettingMode::Off,   servo));
 
 

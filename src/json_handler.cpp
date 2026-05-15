@@ -79,7 +79,7 @@ std::string JsonHandler::parseMessage(std::string json, std::string device_id, S
     std::string type;
 
     // OUPUT_CODES:
-    //  2 - Success ScheduleUnit
+    //  2 - Success set ScheduleUnit
     //  1 - Success set mode
     // -1 - Can't set mode
     // -2 - Can't set ScheduleUnit (delete/add)

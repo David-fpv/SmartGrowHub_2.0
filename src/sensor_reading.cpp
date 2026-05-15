@@ -1,6 +1,6 @@
 #include "sensor_reading.h"
 
-SensorReading::SensorReading(int sensor_id, std::string type, double value, std::string unit)
+SensorReading::SensorReading(int sensor_id, std::string type, float value, std::string unit)
 {
     sensor_id_ = sensor_id;
     type_ = type;
@@ -26,7 +26,7 @@ std::string SensorReading::GetType() const
     return type_;
 }
 
-double SensorReading::GetValue() const
+float SensorReading::GetValue() const
 {
     return value_;
 }

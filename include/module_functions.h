@@ -25,9 +25,9 @@ void initialization_module();
 void blink(Setting setting, TimeStamp time_some);
 void servo (Setting setting, TimeStamp time_now);
 
-void day_light_module_function (Setting setting, TimeStamp time_now);
-void transistor_2 (Setting setting, TimeStamp time_now);
-void transistor_3 (Setting setting, TimeStamp time_now);
-void transistor_4 (Setting setting, TimeStamp time_now);
-void transistor_5 (Setting setting, TimeStamp time_now);
-void transistor_7 (Setting setting, TimeStamp time_now);
+void dayLight (Setting setting, TimeStamp time_now);
+void phytoLight (Setting setting, TimeStamp time_now);
+void heater (Setting setting, TimeStamp time_now);
+void airHumidifier (Setting setting, TimeStamp time_now);
+void fan (Setting setting, TimeStamp time_now);
+void waterPump (Setting setting, TimeStamp time_now);
