@@ -1,6 +1,5 @@
 #pragma once
-#include <string>
 
 enum class UnitKind {Power, Prefer, None};
 
-UnitKind parseUnitKind(std::string unitKindString);
+UnitKind parseUnitKind(const char* unitKindString);

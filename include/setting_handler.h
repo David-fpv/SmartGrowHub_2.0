@@ -1,27 +1,22 @@
 #pragma once
 
-#include <vector>
 #include "setting.h"
 #include "schedule.h"
 #include "schedule_unit.h"
 #include "module_functions.h"
-//#include "sensor_functions.h"
+
+static constexpr uint8_t MAX_SETTINGS = 8;
 
 class SettingHandler
 {
 public:
-
     void AddSetting(Setting setting);
-    bool ChangeScheduleUnit(ModuleType type, std::string operate, ScheduleUnit unit);
+    bool ChangeScheduleUnit(ModuleType type, const char* operate, ScheduleUnit unit);
     bool SetMode(ModuleType type, SettingMode mode);
-
-    //void SaveJsonSetting(); // Functions for saving and loading settings to esp32 memory
-    //void LoadJsonSetting();
-
     void CurateSetting(ModuleType type);
-    void CurateAllSetting(); 
+    void CurateAllSetting();
 
 private:
-    std::vector<Setting> settings_;
-
+    Setting settings_[MAX_SETTINGS];
+    uint8_t count_ = 0;
 };

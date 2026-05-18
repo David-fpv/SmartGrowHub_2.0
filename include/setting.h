@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Arduino.h"
-#include <string>
-#include <vector>
+#include "setting_mode.h"
 #include "module_functions.h"
 #include "sensor_functions.h"
 #include "schedule.h"
@@ -15,19 +14,22 @@
 class Setting
 {
 private:
-    ModuleType type_;
+    ModuleType  type_;
     SettingMode mode_;
-    Schedule schedule_;
-    void (*module_function_) (Setting setting, TimeStamp time_now);
+    Schedule    schedule_;
+    void (*module_function_)(Setting setting, TimeStamp time_now);
 
 public:
-    Setting(ModuleType type, SettingMode mode, void (*function) (Setting setting, TimeStamp time_now));
+    Setting();
+    Setting(ModuleType type, SettingMode mode,
+            void (*function)(Setting setting, TimeStamp time_now),
+            uint8_t schedule_limit = MAX_SCHEDULE_UNITS);
 
-    ModuleType GetType() const;
-    SettingMode GetMode() const;
-    bool SetMode(SettingMode mode);
-    Schedule GetSchedule() const;
-    bool ChangeScheduleUnit(std::string operate, ScheduleUnit unit);
+    ModuleType      GetType()     const;
+    SettingMode     GetMode()     const;
+    bool            SetMode(SettingMode mode);
+    const Schedule& GetSchedule() const;
+    bool            ChangeScheduleUnit(const char* operate, ScheduleUnit unit);
 
     void adjust();
 };

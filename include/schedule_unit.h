@@ -1,24 +1,26 @@
 #pragma once
 
-#include <string> 
-#include "time_range.h"  
+#include <Arduino.h>
+#include "time_range.h"
 #include "unit_kind.h"
 #include "quantity.h"
+
+static constexpr int SCHEDULE_UNIT_ID_LEN = 28;
 
 class ScheduleUnit
 {
 private:
-    std::string unit_id_;
-    UnitKind unit_kind_;
+    char      unit_id_[SCHEDULE_UNIT_ID_LEN];
+    UnitKind  unit_kind_;
     TimeRange time_interval_;
-    Quantity quantity_;
-    
+    Quantity  quantity_;
 
 public:
-    ScheduleUnit(std::string unit_id, UnitKind unit_kind, TimeRange time_interval, Quantity quantity);
+    ScheduleUnit();
+    ScheduleUnit(const char* unit_id, UnitKind unit_kind, TimeRange time_interval, Quantity quantity);
 
-    std::string GetUnitId() const;
-    UnitKind GetUnitKind() const;
-    TimeRange GetTimeInterval() const;
-    Quantity GetQuantity() const;
+    const char* GetUnitId()       const;
+    UnitKind    GetUnitKind()     const;
+    TimeRange   GetTimeInterval() const;
+    Quantity    GetQuantity()     const;
 };

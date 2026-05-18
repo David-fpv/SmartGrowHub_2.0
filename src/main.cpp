@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include "wifi_mqtt_functions.hpp"
-#include <string>
 #include "sensor_handler.h"
 #include "setting_handler.h"
 #include "setting_mode.h"
@@ -8,7 +7,7 @@
 #include "sensor_functions.h"
 #include "json_handler.h"
 
-std::string device_id = "A0001";
+const char device_id[] = "A0001";
 
 const float CONTAINER_DEPTH_CM = 35.0f;
 
@@ -34,33 +33,6 @@ SensorHandler info;
 JsonHandler json_handler;
 
 
-// const char* json_dayLightComponent = R"({
-//     "type": "dayLight",
-//     "version_id": "01JKY5E122HBQSZKXMF0F7HR44",
-//     "mode": 3,
-//     "entries": [
-//         {
-//             "quantity": {
-//                 "magnitude": 15,
-//                 "unit": 1
-//             },
-//             "interval": {
-//                 "start": "01T00:00",
-//                 "end": "02T23:10"
-//             }
-//         }
-//     ]
-// })";
-
-
-// const char* json_default = R"({
-//     "type": "default",
-//     "version_id": "01JKY5E122HBQSZKXMF0F7HR44",
-//     "mode": 0,
-//     "entries": []
-// })";
-
-
 void setup() {
     delay(2500);
     Serial.begin(9600);
@@ -72,14 +44,14 @@ void setup() {
     WifiMqttManager::instance().setup();
     delay(100);
 
-    modules.AddSetting( Setting(ModuleType::Led,        SettingMode::Off,   blink));
-    modules.AddSetting( Setting(ModuleType::DayLight,   SettingMode::Off,   dayLight));
-    modules.AddSetting( Setting(ModuleType::UvLight,    SettingMode::Off,   phytoLight));
-    modules.AddSetting( Setting(ModuleType::Heater,     SettingMode::Off,   heater));
-    modules.AddSetting( Setting(ModuleType::Humidifier, SettingMode::Off,   airHumidifier));
-    modules.AddSetting( Setting(ModuleType::Fan,        SettingMode::Off,   fan));
-    modules.AddSetting( Setting(ModuleType::WaterPump,  SettingMode::Off,   waterPump));
-    modules.AddSetting( Setting(ModuleType::AirFlap,    SettingMode::Off,   servo));
+    modules.AddSetting( Setting(ModuleType::Led,        SettingMode::Off,   blink,          4));
+    modules.AddSetting( Setting(ModuleType::DayLight,   SettingMode::Off,   dayLight,      12));
+    modules.AddSetting( Setting(ModuleType::UvLight,    SettingMode::Off,   phytoLight,    12));
+    modules.AddSetting( Setting(ModuleType::Heater,     SettingMode::Off,   heater,        10));
+    modules.AddSetting( Setting(ModuleType::Humidifier, SettingMode::Off,   airHumidifier, 10));
+    modules.AddSetting( Setting(ModuleType::Fan,        SettingMode::Off,   fan,            4));
+    modules.AddSetting( Setting(ModuleType::WaterPump,  SettingMode::Off,   waterPump,      4));
+    modules.AddSetting( Setting(ModuleType::AirFlap,    SettingMode::Off,   servo,         10));
 
 
     info.addSensorInfo( SensorInfo(  1,  "airTemperature",   "C",    readTemperatureBME));
@@ -89,7 +61,6 @@ void setup() {
     info.addSensorInfo( SensorInfo(  5,  "light",            "%",    readLight));
     info.addSensorInfo( SensorInfo(  6,  "soilTemperature",  "C",    readSoilTemperature));
     info.addSensorInfo( SensorInfo(  7,  "soilMoisture",     "%",    readSoilMoisture));
-    //info.addSensorInfo(SensorInfo(8, "randomNumber", "-", readRandomNumber));
 }
 
 
@@ -107,10 +78,10 @@ void loop() {
     if (previousTime_2 + 30000 < millis())
     {
         previousTime_2 = millis();
-        
-        std::string message = json_handler.getJsonSensorsData(info.getAllReadings(), device_id);
-        Serial.println(message.c_str());
+
+        const char* message = json_handler.getJsonSensorsData(info, device_id);
+        Serial.println(message);
         WifiMqttManager::instance().publish(mqtt_config.topic_sensors, message);
         printTime();
-    }    
+    }
 }

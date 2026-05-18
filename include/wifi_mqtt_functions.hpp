@@ -3,7 +3,7 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
-#include <string>
+#include <string.h>
 #include "setting_handler.h"
 #include "json_handler.h"
 
@@ -36,11 +36,12 @@ public:
     WifiMqttManager& operator=(const WifiMqttManager&) = delete;
 
     void init(SettingHandler* modules, JsonHandler* json_handler,
-              const std::string& device_id, const Config& config) {
+              const char* device_id, const Config& config) {
         modules_      = modules;
         json_handler_ = json_handler;
-        device_id_    = device_id;
-        config_       = config;
+        strncpy(device_id_, device_id, sizeof(device_id_) - 1);
+        device_id_[sizeof(device_id_) - 1] = '\0';
+        config_ = config;
     }
 
     void setup() {
@@ -72,17 +73,15 @@ public:
         connectToMQTT();
     }
 
-    bool publish(const std::string& topic, const std::string& message) {
+    bool publish(const char* topic, const char* message) {
         if (!client_.connected()) return false;
-        return client_.publish(topic.c_str(), message.c_str());
+        return client_.publish(topic, message);
     }
 
     void handleMessage(const char* topic, byte* payload, unsigned int length) {
-        std::string message(reinterpret_cast<const char*>(payload), length);
         Serial.print("Topic: ");   Serial.println(topic);
-        Serial.print("Message: "); Serial.println(message.c_str());
 
-        std::string response = json_handler_->parseMessage(message, device_id_, modules_);
+        const char* response = json_handler_->parseMessage(payload, length, device_id_, modules_);
         publish(config_.topic_response, response);
     }
 
@@ -93,7 +92,7 @@ private:
     PubSubClient    client_;
     JsonHandler*    json_handler_      = nullptr;
     SettingHandler* modules_           = nullptr;
-    std::string     device_id_;
+    char            device_id_[8]      = {};
     Config          config_            = {};
     bool            time_synced_       = false;
     unsigned long   last_reconnect_ms_ = 0;
@@ -127,10 +126,12 @@ private:
         if (client_.connected()) return true;
         if (WiFi.status() != WL_CONNECTED) return false;
 
-        std::string clientId = "ESP32_" + device_id_;
+        char clientId[16];
+        snprintf(clientId, sizeof(clientId), "ESP32_%s", device_id_);
+
         for (int attempt = 0; attempt < config_.max_mqtt_attempts && !client_.connected(); attempt++) {
             Serial.printf("connectToMQTT: attempt %d...\n", attempt + 1);
-            if (client_.connect(clientId.c_str(), config_.user, config_.mqtt_pass)) {
+            if (client_.connect(clientId, config_.user, config_.mqtt_pass)) {
                 client_.subscribe(config_.topic_modules);
                 Serial.println("connectToMQTT: connected");
                 return true;

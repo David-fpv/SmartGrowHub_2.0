@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <string.h>
 
 enum class ModuleType {
     Led,
@@ -14,19 +14,20 @@ enum class ModuleType {
     Unknown
 };
 
-inline ModuleType moduleTypeFromString(const std::string& s) {
-    if (s == "led")        return ModuleType::Led;
-    if (s == "dayLight")   return ModuleType::DayLight;
-    if (s == "uvLight")    return ModuleType::UvLight;
-    if (s == "heater")     return ModuleType::Heater;
-    if (s == "humidifier") return ModuleType::Humidifier;
-    if (s == "fan")        return ModuleType::Fan;
-    if (s == "waterPump")  return ModuleType::WaterPump;
-    if (s == "airFlap")    return ModuleType::AirFlap;
+inline ModuleType moduleTypeFromString(const char* s) {
+    if (!s)                           return ModuleType::Unknown;
+    if (strcmp(s, "led")        == 0) return ModuleType::Led;
+    if (strcmp(s, "dayLight")   == 0) return ModuleType::DayLight;
+    if (strcmp(s, "uvLight")    == 0) return ModuleType::UvLight;
+    if (strcmp(s, "heater")     == 0) return ModuleType::Heater;
+    if (strcmp(s, "humidifier") == 0) return ModuleType::Humidifier;
+    if (strcmp(s, "fan")        == 0) return ModuleType::Fan;
+    if (strcmp(s, "waterPump")  == 0) return ModuleType::WaterPump;
+    if (strcmp(s, "airFlap")    == 0) return ModuleType::AirFlap;
     return ModuleType::Unknown;
 }
 
-inline std::string moduleTypeToString(ModuleType type) {
+inline const char* moduleTypeToString(ModuleType type) {
     switch (type) {
         case ModuleType::Led:        return "led";
         case ModuleType::DayLight:   return "dayLight";

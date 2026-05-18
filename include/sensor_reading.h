@@ -1,36 +1,22 @@
 #pragma once
-#include <string>
-#include "sensor_info.h"
 
-/*char sensor_type[][16] {
-    "Methane",
-    "Smoke",
-    "Hydrogen",
-    "AirTemperature",
-    "AirPressure",
-    "AirHumidity",
-    "PlantHeight",
-    "SoilAcidity",
-    "SoilMoisture",
-    "SoilTemperature",
-    "Illumination"
-};*/
+#include "sensor_info.h"
 
 class SensorReading
 {
-private: 
-    int sensor_id_;
-    std::string type_;
+private:
+    int   sensor_id_;
+    char  type_[20];
     float value_;
-    std::string unit_;
+    char  unit_[8];
 
 public:
-    SensorReading(int sensor_id, std::string type, float value, std::string unit);
-    SensorReading(SensorInfo sensor_info);
+    SensorReading();
+    SensorReading(int sensor_id, const char* type, float value, const char* unit);
+    SensorReading(const SensorInfo& sensor_info);
 
-    int GetSensorId() const;
-    std::string GetType() const;
-    float GetValue() const;
-    std::string GetUnit() const;
-    
+    int         GetSensorId() const;
+    const char* GetType()     const;
+    float       GetValue()    const;
+    const char* GetUnit()     const;
 };

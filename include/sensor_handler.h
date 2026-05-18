@@ -1,29 +1,22 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include "sensor_reading.h"
 #include "sensor_info.h"
 #include "sensor_functions.h"
-#include <ArduinoJson.h>
 
+static constexpr uint8_t MAX_SENSORS = 8;
 
 class SensorHandler
 {
-public: 
-
+public:
     SensorHandler();
 
-    void initialization();
-
-    void addSensorInfo(SensorInfo sensor);
-
-    SensorReading getReading(int sensor_id);
-
-    std::vector<SensorReading> getAllReadings();
-
+    void          addSensorInfo(const SensorInfo& sensor);
+    SensorReading getReading(int sensor_id) const;
+    uint8_t       getCount()               const { return count_; }
+    const SensorInfo& getSensor(uint8_t i) const { return sensors_[i]; }
 
 private:
-
-    std::vector<SensorInfo> sensors_;
+    SensorInfo sensors_[MAX_SENSORS];
+    uint8_t    count_;
 };

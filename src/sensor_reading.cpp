@@ -1,37 +1,27 @@
 #include "sensor_reading.h"
+#include <string.h>
 
-SensorReading::SensorReading(int sensor_id, std::string type, float value, std::string unit)
+SensorReading::SensorReading() : sensor_id_(-1), value_(0.0f)
 {
-    sensor_id_ = sensor_id;
-    type_ = type;
-    value_ = value;
-    unit_ = unit;
+    type_[0] = '\0';
+    unit_[0] = '\0';
 }
 
-SensorReading::SensorReading(SensorInfo sensor_info)
+SensorReading::SensorReading(int sensor_id, const char* type, float value, const char* unit)
+    : sensor_id_(sensor_id), value_(value)
 {
-    sensor_id_ = sensor_info.GetSensorId();
-    type_ = sensor_info.GetType();
-    value_ = sensor_info.GetValue();
-    unit_ = sensor_info.GetUnit();
+    strncpy(type_, type, sizeof(type_) - 1); type_[sizeof(type_) - 1] = '\0';
+    strncpy(unit_, unit, sizeof(unit_) - 1); unit_[sizeof(unit_) - 1] = '\0';
 }
 
-int SensorReading::GetSensorId() const
+SensorReading::SensorReading(const SensorInfo& si)
+    : sensor_id_(si.GetSensorId()), value_(si.GetValue())
 {
-    return sensor_id_;
+    strncpy(type_, si.GetType(), sizeof(type_) - 1); type_[sizeof(type_) - 1] = '\0';
+    strncpy(unit_, si.GetUnit(), sizeof(unit_) - 1); unit_[sizeof(unit_) - 1] = '\0';
 }
 
-std::string SensorReading::GetType() const
-{
-    return type_;
-}
-
-float SensorReading::GetValue() const
-{
-    return value_;
-}
-
-std::string SensorReading::GetUnit() const
-{
-    return unit_;
-}
+int         SensorReading::GetSensorId() const { return sensor_id_; }
+const char* SensorReading::GetType()     const { return type_; }
+float       SensorReading::GetValue()    const { return value_; }
+const char* SensorReading::GetUnit()     const { return unit_; }
