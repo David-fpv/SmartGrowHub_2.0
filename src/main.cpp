@@ -71,9 +71,25 @@ void setup() {
 }
 
 
+static void printFiles() {
+    File root = LittleFS.open("/");
+    File f = root.openNextFile();
+    while (f) {
+        Serial.printf("=== %s (%d bytes) ===\n", f.name(), f.size());
+        while (f.available())
+            Serial.write(f.read());
+        Serial.println();
+        f = root.openNextFile();
+    }
+}
+
+
 long long previousTime_1 = millis();
 long long previousTime_2 = millis();
 void loop() {
+    if (Serial.available() && Serial.read() == 'd')
+        printFiles();
+
     WifiMqttManager::instance().loop();
 
     if (previousTime_1 + 100 < millis())
