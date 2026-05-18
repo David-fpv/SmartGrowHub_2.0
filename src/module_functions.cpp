@@ -27,8 +27,8 @@ void initialization_module()
 }
 
 // Returns the correct time-check function for the current mode:
-// Auto  → inTimeRange      (day + hour + minute)
-// Daily → inHourAndMinute  (hour + minute only, repeats every day)
+// Weekly → inTimeRange      (day + hour + minute)
+// Daily  → inHourAndMinute  (hour + minute only, repeats every day)
 static bool (*timeCheck(SettingMode mode))(TimeRange, TimeStamp) {
     return (mode == SettingMode::Daily) ? inHourAndMinute : inTimeRange;
 }
@@ -42,7 +42,7 @@ void blink(Setting setting, TimeStamp time_now)
         analogWrite(PIN_LED, 255);
         break;
 
-    case SettingMode::Auto:
+    case SettingMode::Weekly:
     case SettingMode::Daily:
     {
         auto check = timeCheck(setting.GetMode());
@@ -99,7 +99,7 @@ void servo(Setting setting, TimeStamp time_now)
         servo_set_percent(100);
         break;
 
-    case SettingMode::Auto:
+    case SettingMode::Weekly:
     case SettingMode::Daily:
     {
         auto check = timeCheck(setting.GetMode());
@@ -139,7 +139,7 @@ void dayLight(Setting setting, TimeStamp time_now)
         analogWrite(pin, 255);
         break;
 
-    case SettingMode::Auto:
+    case SettingMode::Weekly:
     case SettingMode::Daily:
     {
         auto check = timeCheck(setting.GetMode());
@@ -176,7 +176,7 @@ void phytoLight(Setting setting, TimeStamp time_now)
         analogWrite(pin, 255);
         break;
 
-    case SettingMode::Auto:
+    case SettingMode::Weekly:
     case SettingMode::Daily:
     {
         auto check = timeCheck(setting.GetMode());
@@ -214,7 +214,7 @@ void heater(Setting setting, TimeStamp time_now)
         analogWrite(pin, 255);
         break;
 
-    case SettingMode::Auto:
+    case SettingMode::Weekly:
     case SettingMode::Daily:
     {
         auto check = timeCheck(setting.GetMode());
@@ -255,7 +255,7 @@ void airHumidifier(Setting setting, TimeStamp time_now)
         analogWrite(pin, 255);
         break;
 
-    case SettingMode::Auto:
+    case SettingMode::Weekly:
     case SettingMode::Daily:
     {
         auto check = timeCheck(setting.GetMode());
@@ -295,7 +295,7 @@ void fan(Setting setting, TimeStamp time_now)
         analogWrite(pin, 255);
         break;
 
-    case SettingMode::Auto:
+    case SettingMode::Weekly:
     case SettingMode::Daily:
     {
         auto check = timeCheck(setting.GetMode());
@@ -333,7 +333,7 @@ void waterPump(Setting setting, TimeStamp time_now)
         analogWrite(pin, 255);
         break;
 
-    case SettingMode::Auto:
+    case SettingMode::Weekly:
     case SettingMode::Daily:
     {
         auto check = timeCheck(setting.GetMode());
