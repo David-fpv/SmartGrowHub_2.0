@@ -29,381 +29,316 @@ void initialization_module()
 
 void blink(Setting setting, TimeStamp time_now)
 {
-    int pin = PIN_LED;
-
     switch (setting.GetMode())
     {
     case SettingMode::On:
-        digitalWrite(pin, 1);
-    
-    case SettingMode::Auto:
-        digitalWrite(pin, 1);
-        delay(200);
-        digitalWrite(pin, 0);
-        delay(200);
-
-    case SettingMode::Off:
-    default:
-        digitalWrite(pin, 0);
-    }
-}
-
-
-void servo_on_off (int mode)
-{
-    static int angle = 10;
-    if (mode > 0 && angle < 80)
-    {
-        while(angle < 80)
-        {
-            angle++;
-            myservo.write(angle);
-            delay(10); 
-        }
-    }
-    
-    if (mode == 0 && angle > 20)
-    {
-        while(angle > 20)
-        {
-            angle--;
-            myservo.write(angle);
-            delay(10);
-        }
-    }
-}
-
-
-void servo (Setting setting, TimeStamp time_now) // AirFlap
-{
-    servo_on_off(0);
-    // switch (static_cast<int>(program.GetMode()))
-    // {        
-    //     case static_cast<int>(SettingMode::On):
-    //         servo_on_off(1);
-    //         break;
-        
-    //     case static_cast<int>(SettingMode::Daily):
-    //         for (int i = 0; i < program.GetEntries().size(); i++)
-    //         {
-    //             Entry entry = program.GetEntries()[i];
-    //             if (inHourAndMinute(entry.GetTimeInterval(), time_now))
-    //             {
-    //                 if (entry.GetQuantity().unit_ == Unit::Percent)
-    //                 {
-    //                     if (entry.GetQuantity().magnitude_ > 0)
-    //                     {                   
-    //                         servo_on_off(1);
-    //                     } else 
-    //                     {
-    //                         servo_on_off(0);
-    //                     }
-    //                 }
-    //                 return;
-    //             }
-    //         }
-    //         servo_on_off(0);
-    //         break;
-        
-    //     case static_cast<int>(SettingMode::Off):
-    //     default:    
-    //         servo_on_off(0);
-    //         break;
-    // }
-}
-
-
-void dayLight (Setting setting, TimeStamp time_now) // Daylight
-{
-    int pin = PIN_TRANSISTOR_1;
-
-    switch (static_cast<int>(setting.GetMode()))
-    {
-    case 1:
-        analogWrite(pin, 255);
+        analogWrite(PIN_LED, 255);
         break;
 
-    case 2:
-        for (const auto& unit: setting.GetSchedule().GetScheduleUnits())
+    case SettingMode::Auto:
+    case SettingMode::Daily:
+        for (const auto& unit : setting.GetSchedule().GetScheduleUnits())
         {
             if (inTimeRange(unit.GetTimeInterval(), time_now))
             {
-                if (unit.GetUnitKind() == UnitKind::Prefer)
+                if (unit.GetUnitKind() == UnitKind::Power)
+                    analogWrite(PIN_LED, static_cast<int>(unit.GetQuantity().magnitude_ * 2.55f));
+                else if (unit.GetUnitKind() == UnitKind::Prefer)
                 {
-                    analogWrite(pin, 255); // Edit
-                }
-                else if (unit.GetUnitKind() == UnitKind::Power)
-                {
-                    analogWrite(pin, static_cast<int>(unit.GetQuantity().magnitude_ * 2.55));
+                    analogWrite(PIN_LED, 255);
+                    delay(200);
+                    analogWrite(PIN_LED, 0);
+                    delay(200);
                 }
                 return;
             }
         }
+        analogWrite(PIN_LED, 0);
+        break;
 
+    case SettingMode::Off:
+    default:
+        analogWrite(PIN_LED, 0);
+        break;
+    }
+}
+
+
+static int servo_angle = 20;
+
+static void servo_set_angle(int target)
+{
+    target = constrain(target, 20, 80);
+    while (servo_angle < target) { myservo.write(++servo_angle); delay(10); }
+    while (servo_angle > target) { myservo.write(--servo_angle); delay(10); }
+}
+
+static void servo_set_percent(int percent)
+{
+    servo_set_angle(map(constrain(percent, 0, 100), 0, 100, 20, 80));
+}
+
+
+void servo(Setting setting, TimeStamp time_now)
+{
+    const float inaccuracy = 1.0f;
+
+    switch (setting.GetMode())
+    {
+    case SettingMode::On:
+        servo_set_percent(100);
+        break;
+
+    case SettingMode::Auto:
+    case SettingMode::Daily:
+        for (const auto& unit : setting.GetSchedule().GetScheduleUnits())
+        {
+            if (inTimeRange(unit.GetTimeInterval(), time_now))
+            {
+                if (unit.GetUnitKind() == UnitKind::Power)
+                    servo_set_percent(unit.GetQuantity().magnitude_);
+                else if (unit.GetUnitKind() == UnitKind::Prefer)
+                {
+                    float target = unit.GetQuantity().magnitude_;
+                    servo_set_percent((readTemperatureBME() - target) > inaccuracy ? 100 : 0);
+                }
+                return;
+            }
+        }
+        servo_set_percent(0);
+        break;
+
+    case SettingMode::Off:
+    default:
+        servo_set_percent(0);
+        break;
+    }
+}
+
+
+void dayLight(Setting setting, TimeStamp time_now)
+{
+    const int pin = PIN_TRANSISTOR_1;
+
+    switch (setting.GetMode())
+    {
+    case SettingMode::On:
+        analogWrite(pin, 255);
+        break;
+
+    case SettingMode::Auto:
+    case SettingMode::Daily:
+        for (const auto& unit : setting.GetSchedule().GetScheduleUnits())
+        {
+            if (inTimeRange(unit.GetTimeInterval(), time_now))
+            {
+                if (unit.GetUnitKind() == UnitKind::Power)
+                    analogWrite(pin, static_cast<int>(unit.GetQuantity().magnitude_ * 2.55f));
+                else if (unit.GetUnitKind() == UnitKind::Prefer)
+                    analogWrite(pin, 255);
+                return;
+            }
+        }
         analogWrite(pin, 0);
         break;
 
-    case 0:
+    case SettingMode::Off:
     default:
         analogWrite(pin, 0);
         break;
     }
-
-    // switch (static_cast<int>(program.GetMode()))
-    // {        
-    //     case static_cast<int>(SettingMode::On):
-    //         digitalWrite(pin, HIGH);
-    //         break;
-        
-    //     case static_cast<int>(SettingMode::Daily):
-    //         for (int i = 0; i < program.GetEntries().size(); i++)
-    //         {
-    //             Entry entry = program.GetEntries()[i];
-    //             if (inHourAndMinute(entry.GetTimeInterval(), time_now))
-    //             {
-    //                 if (entry.GetQuantity().unit_ == Unit::Percent)
-    //                 {
-    //                     if (entry.GetQuantity().magnitude_ > 0)
-    //                     {                   
-    //                         digitalWrite(pin, HIGH);
-    //                     } else 
-    //                     {
-    //                         digitalWrite(pin, LOW);
-    //                     }
-    //                 }
-    //                 return;
-    //             }
-    //         }
-    //         digitalWrite(pin, LOW);
-    //         break;
-        
-    //     case static_cast<int>(SettingMode::Off):
-    //     default:    
-    //         digitalWrite(pin, LOW);
-    //         break;
-    // }
 }
 
 
-void phytoLight (Setting setting, TimeStamp time_now) // Phyto lighting
+void phytoLight(Setting setting, TimeStamp time_now)
 {
-    int pin = PIN_TRANSISTOR_2;
-    digitalWrite(pin, LOW);
+    const int pin = PIN_TRANSISTOR_2;
 
-    // switch (static_cast<int>(program.GetMode()))
-    // {        
-    //     case static_cast<int>(SettingMode::On):
-    //         digitalWrite(pin, HIGH);
-    //         break;
-        
-    //     case static_cast<int>(SettingMode::Daily):
-    //         for (int i = 0; i < program.GetEntries().size(); i++)
-    //         {
-    //             Entry entry = program.GetEntries()[i];
-    //             if (inHourAndMinute(entry.GetTimeInterval(), time_now))
-    //             {
-    //                 if (entry.GetQuantity().unit_ == Unit::Percent)
-    //                 {
-    //                     if (entry.GetQuantity().magnitude_ > 0)
-    //                     {                   
-    //                         digitalWrite(pin, HIGH);
-    //                     } else 
-    //                     {
-    //                         digitalWrite(pin, LOW);
-    //                     }
-    //                 }
-    //                 return;
-    //             }
-    //         }
-    //         digitalWrite(pin, LOW);
-    //         break;
-        
-    //     case static_cast<int>(SettingMode::Off):
-    //     default:    
-    //         digitalWrite(pin, LOW);
-    //         break;
-    // }
+    switch (setting.GetMode())
+    {
+    case SettingMode::On:
+        analogWrite(pin, 255);
+        break;
+
+    case SettingMode::Auto:
+    case SettingMode::Daily:
+        for (const auto& unit : setting.GetSchedule().GetScheduleUnits())
+        {
+            if (inTimeRange(unit.GetTimeInterval(), time_now))
+            {
+                if (unit.GetUnitKind() == UnitKind::Power)
+                    analogWrite(pin, static_cast<int>(unit.GetQuantity().magnitude_ * 2.55f));
+                else if (unit.GetUnitKind() == UnitKind::Prefer)
+                    analogWrite(pin, 255);
+                return;
+            }
+        }
+        analogWrite(pin, 0);
+        break;
+
+    case SettingMode::Off:
+    default:
+        analogWrite(pin, 0);
+        break;
+    }
 }
 
 
-void heater (Setting setting, TimeStamp time_now) // Heater
+void heater(Setting setting, TimeStamp time_now)
 {
-    int pin = PIN_TRANSISTOR_3;
-    digitalWrite(pin, LOW);
-    // int inaccuracy = 2;
-    // float (*sensor_function) () = readTemperatureBME;
+    const int   pin        = PIN_TRANSISTOR_3;
+    const float inaccuracy = 1.0f;
 
-    // switch (static_cast<int>(program.GetMode()))
-    // {        
-    //     case static_cast<int>(SettingMode::On):
-    //         digitalWrite(pin, HIGH);
-    //         break;
-        
-    //     case static_cast<int>(SettingMode::Daily):
-    //         for (int i = 0; i < program.GetEntries().size(); i++)
-    //         {
-    //             Entry entry = program.GetEntries()[i];
-    //             if (inHourAndMinute(entry.GetTimeInterval(), time_now))
-    //             {
-    //                 if (entry.GetQuantity().unit_ == Unit::Percent)
-    //                 {
-    //                     if (entry.GetQuantity().magnitude_ > 0)
-    //                     {                   
-    //                         digitalWrite(pin, HIGH);
-    //                     } else 
-    //                     {
-    //                         digitalWrite(pin, LOW);
-    //                     }
-    //                 }
-    //                 else if (entry.GetQuantity().unit_ == Unit::Quantity)
-    //                 {
-    //                     int sensor_data = sensor_function();
-    //                     Serial.print("Temperature: ");
-    //                     Serial.println(sensor_data);
-    //                     if (entry.GetQuantity().magnitude_ - sensor_data > inaccuracy)
-    //                     {                   
-    //                         digitalWrite(pin, HIGH);
-    //                     } else 
-    //                     {
-    //                         digitalWrite(pin, LOW);
-    //                     }
-    //                 }
-    //                 return;
-    //             }
-    //         }
-    //         digitalWrite(pin, LOW);
-    //         break;
-        
-    //     case static_cast<int>(SettingMode::Off):
-    //     default:    
-    //         digitalWrite(pin, LOW);
-    //         break;
-    // }
+    switch (setting.GetMode())
+    {
+    case SettingMode::On:
+        analogWrite(pin, 255);
+        break;
+
+    case SettingMode::Auto:
+    case SettingMode::Daily:
+        for (const auto& unit : setting.GetSchedule().GetScheduleUnits())
+        {
+            if (inTimeRange(unit.GetTimeInterval(), time_now))
+            {
+                if (unit.GetUnitKind() == UnitKind::Power)
+                {
+                    analogWrite(pin, static_cast<int>(unit.GetQuantity().magnitude_ * 2.55f));
+                }
+                else if (unit.GetUnitKind() == UnitKind::Prefer)
+                {
+                    float target = unit.GetQuantity().magnitude_;
+                    analogWrite(pin, (target - readTemperatureBME()) > inaccuracy ? 255 : 0);
+                }
+                return;
+            }
+        }
+        analogWrite(pin, 0);
+        break;
+
+    case SettingMode::Off:
+    default:
+        analogWrite(pin, 0);
+        break;
+    }
 }
 
 
-void airHumidifier (Setting setting, TimeStamp time_now) // Air humidifier
+void airHumidifier(Setting setting, TimeStamp time_now)
 {
-    int pin = PIN_TRANSISTOR_4;
-    digitalWrite(pin, LOW);
-    // int inaccuracy = 2;
-    // float (*sensor_function) () = readHumidityBME;
+    const int   pin        = PIN_TRANSISTOR_4;
+    const float inaccuracy = 3.0f;
 
-    // switch (static_cast<int>(program.GetMode()))
-    // {        
-    //     case static_cast<int>(SettingMode::On):
-    //         digitalWrite(pin, HIGH);
-    //         break;
-        
-    //     case static_cast<int>(SettingMode::Daily):
-    //         for (int i = 0; i < program.GetEntries().size(); i++)
-    //         {
-    //             Entry entry = program.GetEntries()[i];
-    //             if (inHourAndMinute(entry.GetTimeInterval(), time_now))
-    //             {
-    //                 if (entry.GetQuantity().unit_ == Unit::Percent)
-    //                 {
-    //                     if (entry.GetQuantity().magnitude_ - sensor_function() > inaccuracy)
-    //                     {                   
-    //                         digitalWrite(pin, HIGH);
-    //                     } else
-    //                     {
-    //                         digitalWrite(pin, LOW);
-    //                     }
-    //                 }
-    //                 return;
-    //             }
-    //         }
-    //         digitalWrite(pin, LOW);
-    //         break;
-        
-    //     case static_cast<int>(SettingMode::Off):
-    //     default:    
-    //         digitalWrite(pin, LOW);
-    //         break;
-    // }
+    switch (setting.GetMode())
+    {
+    case SettingMode::On:
+        analogWrite(pin, 255);
+        break;
+
+    case SettingMode::Auto:
+    case SettingMode::Daily:
+        for (const auto& unit : setting.GetSchedule().GetScheduleUnits())
+        {
+            if (inTimeRange(unit.GetTimeInterval(), time_now))
+            {
+                if (unit.GetUnitKind() == UnitKind::Power)
+                {
+                    analogWrite(pin, static_cast<int>(unit.GetQuantity().magnitude_ * 2.55f));
+                }
+                else if (unit.GetUnitKind() == UnitKind::Prefer)
+                {
+                    float target = unit.GetQuantity().magnitude_;
+                    analogWrite(pin, (target - readHumidityBME()) > inaccuracy ? 255 : 0);
+                }
+                return;
+            }
+        }
+        analogWrite(pin, 0);
+        break;
+
+    case SettingMode::Off:
+    default:
+        analogWrite(pin, 0);
+        break;
+    }
 }
 
 
-void fan (Setting setting, TimeStamp time_now) // Fan
+void fan(Setting setting, TimeStamp time_now)
 {
-    int pin = PIN_TRANSISTOR_5;
-    digitalWrite(pin, LOW);
+    const int pin = PIN_TRANSISTOR_5;
 
-    // switch (static_cast<int>(program.GetMode()))
-    // {        
-    //     case static_cast<int>(SettingMode::On):
-    //         digitalWrite(pin, HIGH);
-    //         break;
-        
-    //     case static_cast<int>(SettingMode::Daily):
-    //         for (int i = 0; i < program.GetEntries().size(); i++)
-    //         {
-    //             Entry entry = program.GetEntries()[i];
-    //             if (inHourAndMinute(entry.GetTimeInterval(), time_now))
-    //             {
-    //                 if (entry.GetQuantity().unit_ == Unit::Percent)
-    //                 {
-    //                     if (entry.GetQuantity().magnitude_ > 0)
-    //                     {                   
-    //                         digitalWrite(pin, HIGH);
-    //                     } else 
-    //                     {
-    //                         digitalWrite(pin, LOW);
-    //                     }
-    //                 }
-    //                 return;
-    //             }
-    //         }
-    //         digitalWrite(pin, LOW);
-    //         break;
-        
-    //     case static_cast<int>(SettingMode::Off):
-    //     default:    
-    //         digitalWrite(pin, LOW);
-    //         break;
-    // }
+    switch (setting.GetMode())
+    {
+    case SettingMode::On:
+        analogWrite(pin, 255);
+        break;
+
+    case SettingMode::Daily:
+        for (const auto& unit : setting.GetSchedule().GetScheduleUnits())
+        {
+            if (inTimeRange(unit.GetTimeInterval(), time_now))
+            {
+                if (unit.GetUnitKind() == UnitKind::Power)
+                    analogWrite(pin, static_cast<int>(unit.GetQuantity().magnitude_ * 2.55f));
+                else if (unit.GetUnitKind() == UnitKind::Prefer)
+                    analogWrite(pin, 0);
+                return;
+            }
+        }
+        analogWrite(pin, 0);
+        break;
+
+    case SettingMode::Off:
+    default:
+        analogWrite(pin, 0);
+        break;
+    }
 }
 
 
-void waterPump (Setting setting, TimeStamp time_now) // Wather pump
+void waterPump(Setting setting, TimeStamp time_now)
 {
-    int pin = PIN_TRANSISTOR_7;
-    digitalWrite(pin, LOW);
-    // int inaccuracy = 2;
-    // float (*sensor_function) () = readSoilMoisture;
+    const int   pin        = PIN_TRANSISTOR_7;
+    const float inaccuracy = 5.0f;
 
-    // switch (static_cast<int>(program.GetMode()))
-    // {        
-    //     case static_cast<int>(SettingMode::On):
-    //         digitalWrite(pin, HIGH);
-    //         break;
-        
-    //     case static_cast<int>(SettingMode::Daily):
-    //         for (int i = 0; i < program.GetEntries().size(); i++)
-    //         {
-    //             Entry entry = program.GetEntries()[i];
-    //             if (inHourAndMinute(entry.GetTimeInterval(), time_now))
-    //             {
-    //                 if (entry.GetQuantity().unit_ == Unit::Percent)
-    //                 {
-    //                     if (entry.GetQuantity().magnitude_ - sensor_function() > inaccuracy)
-    //                     {                   
-    //                         digitalWrite(pin, HIGH);
-    //                     } else 
-    //                     {
-    //                         digitalWrite(pin, LOW);
-    //                     }
-    //                 }
-    //                 return;
-    //             }
-    //         }
-    //         digitalWrite(pin, LOW);
-    //         break;
-        
-    //     case static_cast<int>(SettingMode::Off):
-    //     default:    
-    //         digitalWrite(pin, LOW);
-    //         break;
-    // }
+    switch (setting.GetMode())
+    {
+    case SettingMode::On:
+        analogWrite(pin, 255);
+        break;
+
+    case SettingMode::Auto:
+    case SettingMode::Daily:
+        for (const auto& unit : setting.GetSchedule().GetScheduleUnits())
+        {
+            if (inTimeRange(unit.GetTimeInterval(), time_now))
+            {
+                if (unit.GetUnitKind() == UnitKind::Power)
+                {
+                    analogWrite(pin, static_cast<int>(unit.GetQuantity().magnitude_ * 2.55f));
+                }
+                else if (unit.GetUnitKind() == UnitKind::Prefer)
+                {
+                    float target = unit.GetQuantity().magnitude_;
+                    int max_time = 5000; // 5 second 
+                    while ((target - readSoilMoisture()) > inaccuracy && max_time > 0)
+                    {
+                        analogWrite(pin, 255);
+                        max_time -= 10;
+                        delay(10);
+                    }
+                    analogWrite(pin, 0);
+                }
+                return;
+            }
+        }
+        analogWrite(pin, 0);
+        break;
+
+    case SettingMode::Off:
+    default:
+        analogWrite(pin, 0);
+        break;
+    }
 }
