@@ -73,14 +73,17 @@ void setup() {
 
 static void printFiles() {
     File root = LittleFS.open("/");
+    if (!root) { Serial.println("printFiles: can't open root"); return; }
     File f = root.openNextFile();
     while (f) {
-        Serial.printf("=== %s (%d bytes) ===\n", f.name(), f.size());
+        Serial.printf("=== %s (%d bytes) ===\n", f.name(), (int)f.size());
         while (f.available())
             Serial.write(f.read());
         Serial.println();
+        f.close();
         f = root.openNextFile();
     }
+    root.close();
 }
 
 
