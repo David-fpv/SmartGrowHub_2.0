@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <LittleFS.h>
 #include "wifi_mqtt_functions.hpp"
 #include "sensor_handler.h"
 #include "setting_handler.h"
@@ -36,6 +37,10 @@ JsonHandler json_handler;
 void setup() {
     delay(2500);
     Serial.begin(9600);
+
+    if (!LittleFS.begin(true))
+        Serial.println("LittleFS: mount failed");
+
     initialization_sensors();
     setContainerDepth(CONTAINER_DEPTH_CM);
     initialization_module();
@@ -53,6 +58,8 @@ void setup() {
     modules.AddSetting( Setting(ModuleType::WaterPump,  SettingMode::Off,   waterPump,      4));
     modules.AddSetting( Setting(ModuleType::AirFlap,    SettingMode::Off,   servo,         10));
 
+
+    modules.load();
 
     info.addSensorInfo( SensorInfo(  1,  "airTemperature",   "C",    readTemperatureBME));
     info.addSensorInfo( SensorInfo(  2,  "airHumidity",      "%",    readHumidityBME));

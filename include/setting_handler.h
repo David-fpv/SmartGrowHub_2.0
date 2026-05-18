@@ -16,7 +16,13 @@ public:
     void CurateSetting(ModuleType type);
     void CurateAllSetting();
 
+    void save();
+    void load();
+
 private:
     Setting settings_[MAX_SETTINGS];
     uint8_t count_ = 0;
+
+    void saveModule(uint8_t i);
+    void loadModule(uint8_t i);
 };
