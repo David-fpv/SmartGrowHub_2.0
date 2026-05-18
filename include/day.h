@@ -1,6 +1,6 @@
 #pragma once
 
 
-enum class Day {AnyDay, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday};
+enum class Day {Monday = 1, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday};
 
 Day parseDay(int dayNumber);

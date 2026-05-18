@@ -10,6 +10,6 @@ Day parseDay(int dayNumber) {
         case 5: return Day::Friday;
         case 6: return Day::Saturday;
         case 7: return Day::Sunday;
-        default: return Day::AnyDay;
+        default: return Day::Monday;
     }
 }
