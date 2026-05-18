@@ -118,8 +118,17 @@ std::string JsonHandler::parseMessage(std::string json, std::string device_id, S
 
     if (mode == SettingMode::None)
     {
-        ScheduleUnit unit = parseScheduleUnit(doc["schedule_unit"].as<JsonObject>());
-        code = modules->ChangeScheduleUnit(type, action, unit) ? 2 : -2;
+        if (action == "delete")
+        {
+            std::string unit_id = doc["schedule_unit"]["schedule_unit_id"].as<std::string>();
+            ScheduleUnit stub(unit_id, UnitKind::None, TimeRange{}, Quantity{0, Unit::Unknown});
+            code = modules->ChangeScheduleUnit(type, action, stub) ? 2 : -2;
+        }
+        else
+        {
+            ScheduleUnit unit = parseScheduleUnit(doc["schedule_unit"].as<JsonObject>());
+            code = modules->ChangeScheduleUnit(type, action, unit) ? 2 : -2;
+        }
         std::string message = getAnswerForMessage(device_id, message_id, code);
         return message;
     }
