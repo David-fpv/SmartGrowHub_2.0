@@ -38,10 +38,15 @@ std::string JsonHandler::getAnswerForMessage(std::string device_id, std::string 
 
 
 TimeStamp JsonHandler::getTimeStamp(std::string time_stamp_string)
-{    
-    TimeStamp timestamp;
-    timestamp.day_ = parseDay(std::stoi(time_stamp_string.substr(0, 2)));
-    timestamp.hour_ = std::stoi(time_stamp_string.substr(3, 2));
+{
+    TimeStamp timestamp = {};
+    if (time_stamp_string.size() < 8)
+    {
+        Serial.println("getTimeStamp: invalid format");
+        return timestamp;
+    }
+    timestamp.day_     = parseDay(std::stoi(time_stamp_string.substr(0, 2)));
+    timestamp.hour_    = std::stoi(time_stamp_string.substr(3, 2));
     timestamp.minutes_ = std::stoi(time_stamp_string.substr(6, 2));
     return timestamp;
 }
@@ -90,7 +95,7 @@ std::string JsonHandler::parseMessage(std::string json, std::string device_id, S
     // -3 - Wrong device_id
     // -4 - Deserilization error
 
-    StaticJsonDocument<600> doc;
+    StaticJsonDocument<800> doc;
     DeserializationError error = deserializeJson(doc, json);
     if (error)
     {
