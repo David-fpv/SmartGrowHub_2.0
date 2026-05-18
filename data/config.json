@@ -1,0 +1,15 @@
+{
+  "ssid": "DAVID-laptop",
+  "password": "qwerty555",
+  "server": "broker.emqx.io",
+  "port": 1883,
+  "user": "",
+  "mqtt_pass": "",
+  "topic_sensors": "/Gomel/Tar/sensors/",
+  "topic_modules": "/Gomel/Tar/modules/",
+  "topic_response": "/Gomel/Tar/response/",
+  "max_wifi_attempts": 20,
+  "max_mqtt_attempts": 10,
+  "mqtt_buffer_size": 1000,
+  "utc_offset_sec": 10800
+}
