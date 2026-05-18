@@ -10,6 +10,8 @@
 
 std::string device_id = "A0001";
 
+const float CONTAINER_DEPTH_CM = 35.0f;
+
 const WifiMqttManager::Config mqtt_config = {
     /* ssid             */ "DAVID-laptop",
     /* password         */ "qwerty555",
@@ -63,6 +65,7 @@ void setup() {
     delay(2500);
     Serial.begin(9600);
     initialization_sensors();
+    setContainerDepth(CONTAINER_DEPTH_CM);
     initialization_module();
     delay(100);
     WifiMqttManager::instance().init(&modules, &json_handler, device_id, mqtt_config);
@@ -82,7 +85,7 @@ void setup() {
     info.addSensorInfo( SensorInfo(  1,  "airTemperature",   "C",    readTemperatureBME));
     info.addSensorInfo( SensorInfo(  2,  "airHumidity",      "%",    readHumidityBME));
     info.addSensorInfo( SensorInfo(  3,  "pressure",         "Pa",   readPressureBME));
-    info.addSensorInfo( SensorInfo(  4,  "plantHeight",      "cm",   readDistance));
+    info.addSensorInfo( SensorInfo(  4,  "plantHeight",      "cm",   readPlantHeight));
     info.addSensorInfo( SensorInfo(  5,  "light",            "%",    readLight));
     info.addSensorInfo( SensorInfo(  6,  "soilTemperature",  "C",    readSoilTemperature));
     info.addSensorInfo( SensorInfo(  7,  "soilMoisture",     "%",    readSoilMoisture));

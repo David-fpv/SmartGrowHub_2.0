@@ -78,17 +78,27 @@ float readPressureBME()
 
 float readDistance()
 {
-  // импульс 10 мкс
-  digitalWrite(PIN_HC_TRIG, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(PIN_HC_TRIG, LOW);
+    digitalWrite(PIN_HC_TRIG, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(PIN_HC_TRIG, LOW);
 
-  // измеряем время ответного импульса
-  uint32_t us = pulseIn(PIN_HC_ECHO, HIGH);
+    uint32_t us = pulseIn(PIN_HC_ECHO, HIGH);
+    return us / 58.3f;
+}
 
-  // считаем расстояние и возвращаем
-  float dist = (us / 58.3);
-  return dist;
+
+static float container_depth_cm = 0.0f;
+
+void setContainerDepth(float depth_cm)
+{
+    container_depth_cm = depth_cm;
+}
+
+float readPlantHeight()
+{
+    float dist = readDistance();
+    float height = container_depth_cm - dist;
+    return height > 0.0f ? height : 0.0f;
 }
 
 

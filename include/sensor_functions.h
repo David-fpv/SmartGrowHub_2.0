@@ -22,6 +22,8 @@ float readTemperatureBME();
 float readHumidityBME();
 float readPressureBME();
 float readDistance();
+float readPlantHeight();
+void  setContainerDepth(float depth_cm);
 float readSoilTemperature();
 float readSoilMoisture();
 float readLight();

@@ -64,7 +64,7 @@ void blink(Setting setting, TimeStamp time_now)
 }
 
 
-static int servo_angle = 20;
+static int servo_angle = 80;
 
 static void servo_set_angle(int target)
 {
@@ -75,7 +75,7 @@ static void servo_set_angle(int target)
 
 static void servo_set_percent(int percent)
 {
-    servo_set_angle(map(constrain(percent, 0, 100), 0, 100, 20, 80));
+    servo_set_angle(map(constrain(percent, 0, 100), 0, 100, 80, 20));
 }
 
 
@@ -226,7 +226,7 @@ void heater(Setting setting, TimeStamp time_now)
 
 void airHumidifier(Setting setting, TimeStamp time_now)
 {
-    const int   pin        = PIN_TRANSISTOR_4;
+    const int   pin        = PIN_TRANSISTOR_7;
     const float inaccuracy = 3.0f;
 
     switch (setting.GetMode())
@@ -299,7 +299,7 @@ void fan(Setting setting, TimeStamp time_now)
 
 void waterPump(Setting setting, TimeStamp time_now)
 {
-    const int   pin        = PIN_TRANSISTOR_7;
+    const int   pin        = PIN_TRANSISTOR_6;
     const float inaccuracy = 5.0f;
 
     switch (setting.GetMode())
