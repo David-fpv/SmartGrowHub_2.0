@@ -26,6 +26,13 @@ void initialization_module()
     delay(500);
 }
 
+// Returns the correct time-check function for the current mode:
+// Auto  → inTimeRange      (day + hour + minute)
+// Daily → inHourAndMinute  (hour + minute only, repeats every day)
+static bool (*timeCheck(SettingMode mode))(TimeRange, TimeStamp) {
+    return (mode == SettingMode::Daily) ? inHourAndMinute : inTimeRange;
+}
+
 
 void blink(Setting setting, TimeStamp time_now)
 {
@@ -37,9 +44,11 @@ void blink(Setting setting, TimeStamp time_now)
 
     case SettingMode::Auto:
     case SettingMode::Daily:
+    {
+        auto check = timeCheck(setting.GetMode());
         for (const auto& unit : setting.GetSchedule().GetScheduleUnits())
         {
-            if (inTimeRange(unit.GetTimeInterval(), time_now))
+            if (check(unit.GetTimeInterval(), time_now))
             {
                 if (unit.GetUnitKind() == UnitKind::Power)
                     analogWrite(PIN_LED, static_cast<int>(unit.GetQuantity().magnitude_ * 2.55f));
@@ -55,6 +64,7 @@ void blink(Setting setting, TimeStamp time_now)
         }
         analogWrite(PIN_LED, 0);
         break;
+    }
 
     case SettingMode::Off:
     default:
@@ -91,9 +101,11 @@ void servo(Setting setting, TimeStamp time_now)
 
     case SettingMode::Auto:
     case SettingMode::Daily:
+    {
+        auto check = timeCheck(setting.GetMode());
         for (const auto& unit : setting.GetSchedule().GetScheduleUnits())
         {
-            if (inTimeRange(unit.GetTimeInterval(), time_now))
+            if (check(unit.GetTimeInterval(), time_now))
             {
                 if (unit.GetUnitKind() == UnitKind::Power)
                     servo_set_percent(unit.GetQuantity().magnitude_);
@@ -107,6 +119,7 @@ void servo(Setting setting, TimeStamp time_now)
         }
         servo_set_percent(0);
         break;
+    }
 
     case SettingMode::Off:
     default:
@@ -128,9 +141,11 @@ void dayLight(Setting setting, TimeStamp time_now)
 
     case SettingMode::Auto:
     case SettingMode::Daily:
+    {
+        auto check = timeCheck(setting.GetMode());
         for (const auto& unit : setting.GetSchedule().GetScheduleUnits())
         {
-            if (inTimeRange(unit.GetTimeInterval(), time_now))
+            if (check(unit.GetTimeInterval(), time_now))
             {
                 if (unit.GetUnitKind() == UnitKind::Power)
                     analogWrite(pin, static_cast<int>(unit.GetQuantity().magnitude_ * 2.55f));
@@ -141,6 +156,7 @@ void dayLight(Setting setting, TimeStamp time_now)
         }
         analogWrite(pin, 0);
         break;
+    }
 
     case SettingMode::Off:
     default:
@@ -162,9 +178,11 @@ void phytoLight(Setting setting, TimeStamp time_now)
 
     case SettingMode::Auto:
     case SettingMode::Daily:
+    {
+        auto check = timeCheck(setting.GetMode());
         for (const auto& unit : setting.GetSchedule().GetScheduleUnits())
         {
-            if (inTimeRange(unit.GetTimeInterval(), time_now))
+            if (check(unit.GetTimeInterval(), time_now))
             {
                 if (unit.GetUnitKind() == UnitKind::Power)
                     analogWrite(pin, static_cast<int>(unit.GetQuantity().magnitude_ * 2.55f));
@@ -175,6 +193,7 @@ void phytoLight(Setting setting, TimeStamp time_now)
         }
         analogWrite(pin, 0);
         break;
+    }
 
     case SettingMode::Off:
     default:
@@ -197,14 +216,14 @@ void heater(Setting setting, TimeStamp time_now)
 
     case SettingMode::Auto:
     case SettingMode::Daily:
+    {
+        auto check = timeCheck(setting.GetMode());
         for (const auto& unit : setting.GetSchedule().GetScheduleUnits())
         {
-            if (inTimeRange(unit.GetTimeInterval(), time_now))
+            if (check(unit.GetTimeInterval(), time_now))
             {
                 if (unit.GetUnitKind() == UnitKind::Power)
-                {
                     analogWrite(pin, static_cast<int>(unit.GetQuantity().magnitude_ * 2.55f));
-                }
                 else if (unit.GetUnitKind() == UnitKind::Prefer)
                 {
                     float target = unit.GetQuantity().magnitude_;
@@ -215,6 +234,7 @@ void heater(Setting setting, TimeStamp time_now)
         }
         analogWrite(pin, 0);
         break;
+    }
 
     case SettingMode::Off:
     default:
@@ -237,14 +257,14 @@ void airHumidifier(Setting setting, TimeStamp time_now)
 
     case SettingMode::Auto:
     case SettingMode::Daily:
+    {
+        auto check = timeCheck(setting.GetMode());
         for (const auto& unit : setting.GetSchedule().GetScheduleUnits())
         {
-            if (inTimeRange(unit.GetTimeInterval(), time_now))
+            if (check(unit.GetTimeInterval(), time_now))
             {
                 if (unit.GetUnitKind() == UnitKind::Power)
-                {
                     analogWrite(pin, static_cast<int>(unit.GetQuantity().magnitude_ * 2.55f));
-                }
                 else if (unit.GetUnitKind() == UnitKind::Prefer)
                 {
                     float target = unit.GetQuantity().magnitude_;
@@ -255,6 +275,7 @@ void airHumidifier(Setting setting, TimeStamp time_now)
         }
         analogWrite(pin, 0);
         break;
+    }
 
     case SettingMode::Off:
     default:
@@ -274,10 +295,13 @@ void fan(Setting setting, TimeStamp time_now)
         analogWrite(pin, 255);
         break;
 
+    case SettingMode::Auto:
     case SettingMode::Daily:
+    {
+        auto check = timeCheck(setting.GetMode());
         for (const auto& unit : setting.GetSchedule().GetScheduleUnits())
         {
-            if (inTimeRange(unit.GetTimeInterval(), time_now))
+            if (check(unit.GetTimeInterval(), time_now))
             {
                 if (unit.GetUnitKind() == UnitKind::Power)
                     analogWrite(pin, static_cast<int>(unit.GetQuantity().magnitude_ * 2.55f));
@@ -288,6 +312,7 @@ void fan(Setting setting, TimeStamp time_now)
         }
         analogWrite(pin, 0);
         break;
+    }
 
     case SettingMode::Off:
     default:
@@ -310,18 +335,18 @@ void waterPump(Setting setting, TimeStamp time_now)
 
     case SettingMode::Auto:
     case SettingMode::Daily:
+    {
+        auto check = timeCheck(setting.GetMode());
         for (const auto& unit : setting.GetSchedule().GetScheduleUnits())
         {
-            if (inTimeRange(unit.GetTimeInterval(), time_now))
+            if (check(unit.GetTimeInterval(), time_now))
             {
                 if (unit.GetUnitKind() == UnitKind::Power)
-                {
                     analogWrite(pin, static_cast<int>(unit.GetQuantity().magnitude_ * 2.55f));
-                }
                 else if (unit.GetUnitKind() == UnitKind::Prefer)
                 {
                     float target = unit.GetQuantity().magnitude_;
-                    int max_time = 5000; // 5 second 
+                    int max_time = 5000;
                     while ((target - readSoilMoisture()) > inaccuracy && max_time > 0)
                     {
                         analogWrite(pin, 255);
@@ -335,6 +360,7 @@ void waterPump(Setting setting, TimeStamp time_now)
         }
         analogWrite(pin, 0);
         break;
+    }
 
     case SettingMode::Off:
     default:
