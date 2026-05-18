@@ -1,9 +1,38 @@
 #include "sensor_functions.h"
+#include <time.h>
 
 
 GyverBME280 bme;
 MicroDS3231 rtc;
 GyverNTC therm(PIN_SOIL_TEMPERATURE, 10000, 3950, 25, 10000, 12);
+
+void syncTimeFromNTP(int utcOffsetSec)
+{
+    configTime(utcOffsetSec, 0, "pool.ntp.org");
+
+    struct tm timeinfo;
+    int attempts = 0;
+    Serial.print("NTP sync");
+    while (!getLocalTime(&timeinfo) && attempts < 20)
+    {
+        delay(500);
+        attempts++;
+        Serial.print(".");
+    }
+    Serial.println();
+
+    if (attempts < 20)
+    {
+        rtc.setTime(timeinfo.tm_sec, timeinfo.tm_min, timeinfo.tm_hour,
+                    timeinfo.tm_mday, timeinfo.tm_mon + 1, timeinfo.tm_year + 1900);
+        Serial.println("NTP sync: done");
+    }
+    else
+    {
+        Serial.println("NTP sync: failed");
+    }
+}
+
 
 void initialization_sensors()
 {

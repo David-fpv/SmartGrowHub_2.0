@@ -7,6 +7,8 @@
 #include "setting_handler.h"
 #include "json_handler.h"
 
+void syncTimeFromNTP(int utcOffsetSec);
+
 class WifiMqttManager {
 public:
     struct Config {
@@ -21,6 +23,7 @@ public:
         int         max_wifi_attempts;
         int         max_mqtt_attempts;
         int         mqtt_buffer_size;
+        int         utc_offset_sec;
     };
 
     static WifiMqttManager& instance() {
@@ -76,6 +79,7 @@ private:
     SettingHandler* modules_     = nullptr;
     std::string    device_id_;
     Config         config_       = {};
+    bool           time_synced_  = false;
 
     WifiMqttManager() : client_(espClient_) {}
 
@@ -93,6 +97,10 @@ private:
             return false;
         }
         Serial.println("connectToWiFi: connected");
+        if (!time_synced_) {
+            syncTimeFromNTP(config_.utc_offset_sec);
+            time_synced_ = true;
+        }
         return true;
     }
 

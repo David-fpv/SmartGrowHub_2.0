@@ -22,6 +22,7 @@ const WifiMqttManager::Config mqtt_config = {
     /* max_wifi_attempts*/ 20,
     /* max_mqtt_attempts*/ 10,
     /* mqtt_buffer_size */ 1000,
+    /* utc_offset_sec  */ 10800, // UTC+3
 };
 
 // Objects

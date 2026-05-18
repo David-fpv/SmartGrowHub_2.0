@@ -16,6 +16,7 @@
 
 
 void initialization_sensors();
+void syncTimeFromNTP(int utcOffsetSec);
 float readRandomNumber();
 float readTemperatureBME();
 float readHumidityBME();
