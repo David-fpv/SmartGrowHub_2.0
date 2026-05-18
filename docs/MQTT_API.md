@@ -65,14 +65,14 @@ ESP32 публикует на топик `topic_sensors` каждые 30 сек�
 
 ## Установка режима
 
-Поле `mode` содержит числовой код режима, `action` и `schedule_unit` не нужны.
+Поле `mode` содержит строковое название режима, `action` и `schedule_unit` не нужны.
 
-| `mode` | Режим | Описание |
-|--------|-------|----------|
-| `0` | Off | Выключен |
-| `1` | On | Включён постоянно |
-| `2` | Weekly | По расписанию с учётом дня недели (`DD` = 01–07) |
-| `3` | Daily | По расписанию каждый день (`DD` игнорируется) |
+| `mode` | Описание |
+|--------|----------|
+| `"off"` | Выключен |
+| `"on"` | Включён постоянно |
+| `"weekly"` | По расписанию с учётом дня недели (`DD` = 01–07) |
+| `"daily"` | По расписанию каждый день (`DD` игнорируется) |
 
 **Пример — включить нагреватель:**
 ```json
@@ -80,7 +80,7 @@ ESP32 публикует на топик `topic_sensors` каждые 30 сек�
   "device_id":  "A0001",
   "message_id": "msg-001",
   "type":       "heater",
-  "mode":       1
+  "mode":       "on"
 }
 ```
 
@@ -90,7 +90,7 @@ ESP32 публикует на топик `topic_sensors` каждые 30 сек�
   "device_id":  "A0001",
   "message_id": "msg-002",
   "type":       "dayLight",
-  "mode":       3
+  "mode":       "daily"
 }
 ```
 
@@ -98,7 +98,7 @@ ESP32 публикует на топик `topic_sensors` каждые 30 сек�
 
 ## Управление расписанием (ScheduleUnit)
 
-Для операций с расписанием: `mode` = `4` (None), `action` = `"add"` или `"delete"`.
+Для операций с расписанием: `mode` = `"none"`, `action` = `"add"` или `"delete"`.
 
 ### Добавить единицу расписания
 
@@ -107,7 +107,7 @@ ESP32 публикует на топик `topic_sensors` каждые 30 сек�
   "device_id":  "A0001",
   "message_id": "msg-003",
   "type":       "dayLight",
-  "mode":       4,
+  "mode":       "none",
   "action":     "add",
   "schedule_unit": {
     "schedule_unit_id": "01JKY5E122HBQSZKXMF0F7HR44",
@@ -118,7 +118,7 @@ ESP32 публикует на топик `topic_sensors` каждые 30 сек�
     },
     "quantity": {
       "magnitude": 80,
-      "unit": 1
+      "unit": "%"
     }
   }
 }
@@ -131,7 +131,7 @@ ESP32 публикует на топик `topic_sensors` каждые 30 сек�
   "device_id":  "A0001",
   "message_id": "msg-004",
   "type":       "dayLight",
-  "mode":       4,
+  "mode":       "none",
   "action":     "delete",
   "schedule_unit": {
     "schedule_unit_id": "01JKY5E122HBQSZKXMF0F7HR44"
@@ -160,15 +160,15 @@ ESP32 публикует на топик `topic_sensors` каждые 30 сек�
 | `hh` | Час (00–23) |
 | `mm` | Минута (00–59) |
 
-> В режиме **Daily** (`mode: 3`) поле `DD` игнорируется — интервал повторяется каждый день.  
-> В режиме **Weekly** (`mode: 2`) `DD` обязателен: `01`–`07`.
+> В режиме **Daily** (`"mode": "daily"`) поле `DD` игнорируется — интервал повторяется каждый день.  
+> В режиме **Weekly** (`"mode": "weekly"`) `DD` обязателен: `01`–`07`.
 
 ### Поле `quantity`
 
 | Поле | Тип | Описание |
 |------|-----|----------|
 | `magnitude` | int | Значение (0–100 для процентов, градусы для температуры) |
-| `unit` | int | `1`=%, `2`=количество, `3`=°C |
+| `unit` | string | `"%"`=%, `"C"`=°C |
 
 ---
 
@@ -214,12 +214,12 @@ ESP32 публикует на топик `topic_sensors` каждые 30 сек�
 ```json
 {
   "device_id": "A0001", "message_id": "msg-010",
-  "type": "heater", "mode": 4, "action": "add",
+  "type": "heater", "mode": "none", "action": "add",
   "schedule_unit": {
     "schedule_unit_id": "unit-heater-1",
     "kind": "prefer",
     "interval": { "start": "01T06:00", "end": "05T22:00" },
-    "quantity": { "magnitude": 22, "unit": 3 }
+    "quantity": { "magnitude": 22, "unit": "C" }
   }
 }
 ```
@@ -229,12 +229,12 @@ ESP32 публикует на топик `topic_sensors` каждые 30 сек�
 ```json
 {
   "device_id": "A0001", "message_id": "msg-011",
-  "type": "waterPump", "mode": 4, "action": "add",
+  "type": "waterPump", "mode": "none", "action": "add",
   "schedule_unit": {
     "schedule_unit_id": "unit-pump-1",
     "kind": "power",
     "interval": { "start": "01T08:00", "end": "01T08:05" },
-    "quantity": { "magnitude": 70, "unit": 1 }
+    "quantity": { "magnitude": 70, "unit": "%" }
   }
 }
 ```
@@ -244,8 +244,8 @@ ESP32 публикует на топик `topic_sensors` каждые 30 сек�
 ### Перевести насос в режим Daily и выключить увлажнитель
 
 ```json
-{ "device_id": "A0001", "message_id": "msg-012", "type": "waterPump",  "mode": 3 }
+{ "device_id": "A0001", "message_id": "msg-012", "type": "waterPump",  "mode": "daily" }
 ```
 ```json
-{ "device_id": "A0001", "message_id": "msg-013", "type": "humidifier", "mode": 0 }
+{ "device_id": "A0001", "message_id": "msg-013", "type": "humidifier", "mode": "off" }
 ```

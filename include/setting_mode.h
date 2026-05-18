@@ -2,4 +2,4 @@
 
 enum class SettingMode {Off, On, Weekly, Daily, None};
 
-SettingMode parseSettingMode(int mode);
+SettingMode parseSettingMode(const char* mode);

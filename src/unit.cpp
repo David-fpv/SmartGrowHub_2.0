@@ -1,11 +1,11 @@
 #include "unit.h"
+#include <string.h>
 
 
-Unit toUnit(int unit_id)
+Unit toUnit(const char* unit_str)
 {
-    switch (unit_id) {
-        case 1: return Unit::Percent;
-        case 2: return Unit::Celsius;
-        default: return Unit::Unknown;
-    }
+    if (!unit_str)                return Unit::Unknown;
+    if (strcmp(unit_str, "%") == 0) return Unit::Percent;
+    if (strcmp(unit_str, "C") == 0) return Unit::Celsius;
+    return Unit::Unknown;
 }

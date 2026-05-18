@@ -1,14 +1,13 @@
 #include "setting_mode.h"
+#include <string.h>
 
 
-SettingMode parseSettingMode(int mode)
+SettingMode parseSettingMode(const char* mode)
 {
-    switch (mode)
-    {
-    case 0: return SettingMode::Off;
-    case 1: return SettingMode::On;
-    case 2: return SettingMode::Weekly;
-    case 3: return SettingMode::Daily;
-    default: return SettingMode::None;
-    }
+    if (!mode)                       return SettingMode::None;
+    if (strcmp(mode, "off")    == 0) return SettingMode::Off;
+    if (strcmp(mode, "on")     == 0) return SettingMode::On;
+    if (strcmp(mode, "weekly") == 0) return SettingMode::Weekly;
+    if (strcmp(mode, "daily")  == 0) return SettingMode::Daily;
+    return SettingMode::None;
 }

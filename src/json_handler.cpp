@@ -69,7 +69,7 @@ Quantity JsonHandler::parseQuantity(const JsonObject& json_quantity)
 {
     Quantity quantity;
     quantity.magnitude_ = json_quantity["magnitude"].as<int>();
-    quantity.unit_      = toUnit(json_quantity["unit"].as<int>());
+    quantity.unit_      = toUnit(json_quantity["unit"].as<const char*>());
     return quantity;
 }
 
@@ -113,7 +113,7 @@ const char* JsonHandler::parseMessage(const uint8_t* data, size_t length,
         return getAnswerForMessage(device_id, message_id ? message_id : "000000", -3);
     }
 
-    SettingMode mode   = parseSettingMode(doc["mode"].as<int>());
+    SettingMode mode   = parseSettingMode(doc["mode"].as<const char*>());
     const char* action = doc["action"].as<const char*>();
     ModuleType  type   = moduleTypeFromString(doc["type"].as<const char*>());
 
