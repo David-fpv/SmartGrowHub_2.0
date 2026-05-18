@@ -20,6 +20,7 @@ public:
         const char* mqtt_pass;
         const char* topic_sensors;
         const char* topic_modules;
+        const char* topic_response;
         int         max_wifi_attempts;
         int         max_mqtt_attempts;
         int         mqtt_buffer_size;
@@ -59,17 +60,13 @@ public:
         client_.publish(topic.c_str(), message.c_str());
     }
 
-    void publishInfo(const std::string& message) {
-        publish(config_.topic_sensors, message);
-    }
-
     void handleMessage(const char* topic, byte* payload, unsigned int length) {
         std::string message(reinterpret_cast<const char*>(payload), length);
         Serial.print("Topic: ");   Serial.println(topic);
         Serial.print("Message: "); Serial.println(message.c_str());
 
         std::string response = json_handler_->parseMessage(message, device_id_, modules_);
-        publish(config_.topic_sensors, response);
+        publish(config_.topic_response, response);
     }
 
 private:

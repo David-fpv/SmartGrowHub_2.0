@@ -9,7 +9,7 @@
 class JsonHandler
 {
     public:
-        std::string getJsonSensorsData(std::vector<SensorReading>);
+        std::string getJsonSensorsData(std::vector<SensorReading> readings, std::string device_id);
         std::string getAnswerForMessage(std::string device_id, std::string message_id, int code);
         std::string parseMessage(std::string json, std::string device_id, SettingHandler *modules);
         //void getJsonSettings();        

@@ -19,6 +19,7 @@ const WifiMqttManager::Config mqtt_config = {
     /* mqtt_pass        */ "",
     /* topic_sensors    */ "/Gomel/Tar/sensors/",
     /* topic_modules    */ "/Gomel/Tar/modules/",
+    /* topic_response   */ "/Gomel/Tar/response/",
     /* max_wifi_attempts*/ 20,
     /* max_mqtt_attempts*/ 10,
     /* mqtt_buffer_size */ 1000,
@@ -104,9 +105,9 @@ void loop() {
     {
         previousTime_2 = millis();
         
-        std::string message = json_handler.getJsonSensorsData(info.getAllReadings());
+        std::string message = json_handler.getJsonSensorsData(info.getAllReadings(), device_id);
         Serial.println(message.c_str());
-        WifiMqttManager::instance().publishInfo(json_handler.getJsonSensorsData(info.getAllReadings()));
+        WifiMqttManager::instance().publish(mqtt_config.topic_sensors, message);
         printTime();
     }    
 }

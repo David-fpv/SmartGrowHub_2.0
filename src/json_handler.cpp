@@ -1,16 +1,20 @@
 #include "json_handler.h"
 
 
-std::string JsonHandler::getJsonSensorsData(std::vector<SensorReading> current_sensor_readings)
+std::string JsonHandler::getJsonSensorsData(std::vector<SensorReading> readings, std::string device_id)
 {
-    StaticJsonDocument<1000> json;
+    StaticJsonDocument<1200> json;
 
-    for (int i = 0; i < current_sensor_readings.size(); i++)
+    json["device_id"] = device_id;
+    JsonArray data = json.createNestedArray("data");
+
+    for (int i = 0; i < readings.size(); i++)
     {
-        json[i]["SensorId"] = current_sensor_readings[i].GetSensorId();
-        json[i]["Type"] = current_sensor_readings[i].GetType();
-        json[i]["Value"] = current_sensor_readings[i].GetValue();
-        json[i]["Unit"] = current_sensor_readings[i].GetUnit();
+        JsonObject entry = data.createNestedObject();
+        entry["SensorId"] = readings[i].GetSensorId();
+        entry["Type"]     = readings[i].GetType();
+        entry["Value"]    = readings[i].GetValue();
+        entry["Unit"]     = readings[i].GetUnit();
     }
 
     std::string string_json;
