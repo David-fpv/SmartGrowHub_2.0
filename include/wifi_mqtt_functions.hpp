@@ -47,17 +47,34 @@ public:
         client_.setServer(config_.server, config_.port);
         client_.setCallback(mqttCallback);
         client_.setBufferSize(config_.mqtt_buffer_size);
-        ensureConnected();
+
+        WiFi.setAutoReconnect(true);
+        WiFi.persistent(false);
+
+        connectToWiFi();
+        connectToMQTT();
     }
 
     void loop() {
-        client_.loop();
-        ensureConnected();
+        if (client_.connected()) {
+            client_.loop();
+            return;
+        }
+
+        unsigned long now = millis();
+        if (now - last_reconnect_ms_ < RECONNECT_INTERVAL_MS) return;
+        last_reconnect_ms_ = now;
+
+        if (WiFi.status() != WL_CONNECTED) {
+            Serial.println("loop: waiting for WiFi...");
+            return;
+        }
+        connectToMQTT();
     }
 
-    void publish(const std::string& topic, const std::string& message) {
-        ensureConnected();
-        client_.publish(topic.c_str(), message.c_str());
+    bool publish(const std::string& topic, const std::string& message) {
+        if (!client_.connected()) return false;
+        return client_.publish(topic.c_str(), message.c_str());
     }
 
     void handleMessage(const char* topic, byte* payload, unsigned int length) {
@@ -70,20 +87,25 @@ public:
     }
 
 private:
-    WiFiClient     espClient_;
-    PubSubClient   client_;
-    JsonHandler*   json_handler_ = nullptr;
-    SettingHandler* modules_     = nullptr;
-    std::string    device_id_;
-    Config         config_       = {};
-    bool           time_synced_  = false;
+    static constexpr unsigned long RECONNECT_INTERVAL_MS = 5000;
+
+    WiFiClient      espClient_;
+    PubSubClient    client_;
+    JsonHandler*    json_handler_      = nullptr;
+    SettingHandler* modules_           = nullptr;
+    std::string     device_id_;
+    Config          config_            = {};
+    bool            time_synced_       = false;
+    unsigned long   last_reconnect_ms_ = 0;
 
     WifiMqttManager() : client_(espClient_) {}
 
     bool connectToWiFi() {
         if (WiFi.status() == WL_CONNECTED) return true;
 
+        WiFi.disconnect(true);
         WiFi.begin(config_.ssid, config_.password);
+
         for (int attempt = 0; attempt < config_.max_wifi_attempts && WiFi.status() != WL_CONNECTED; attempt++) {
             Serial.printf("connectToWiFi: attempt %d...\n", attempt + 1);
             delay(500);
@@ -102,6 +124,9 @@ private:
     }
 
     bool connectToMQTT() {
+        if (client_.connected()) return true;
+        if (WiFi.status() != WL_CONNECTED) return false;
+
         std::string clientId = "ESP32_" + device_id_;
         for (int attempt = 0; attempt < config_.max_mqtt_attempts && !client_.connected(); attempt++) {
             Serial.printf("connectToMQTT: attempt %d...\n", attempt + 1);
@@ -111,19 +136,10 @@ private:
                 return true;
             }
             Serial.printf("connectToMQTT: failed, state=%d\n", client_.state());
-            delay(2000);
+            delay(500);
         }
-        if (!client_.connected()) {
-            Serial.println("connectToMQTT: couldn't connect");
-            return false;
-        }
-        return true;
-    }
-
-    bool ensureConnected() {
-        if (WiFi.status() != WL_CONNECTED && !connectToWiFi()) return false;
-        if (!client_.connected()) return connectToMQTT();
-        return true;
+        Serial.println("connectToMQTT: couldn't connect");
+        return false;
     }
 
     static void mqttCallback(char* topic, byte* payload, unsigned int length) {
