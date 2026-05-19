@@ -12,6 +12,7 @@ class SettingHandler
 public:
     void AddSetting(Setting setting);
     bool ChangeScheduleUnit(ModuleType type, const char* operate, ScheduleUnit unit);
+    bool DeleteAllScheduleUnits(ModuleType type);
     bool SetMode(ModuleType type, SettingMode mode);
     void CurateSetting(ModuleType type);
     void CurateAllSetting();

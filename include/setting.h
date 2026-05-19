@@ -30,6 +30,7 @@ public:
     bool            SetMode(SettingMode mode);
     const Schedule& GetSchedule() const;
     bool            ChangeScheduleUnit(const char* operate, ScheduleUnit unit);
+    void            DeleteAllScheduleUnits();
 
     void adjust();
 };

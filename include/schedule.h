@@ -26,6 +26,7 @@ public:
 
     bool             addScheduleUnit(const ScheduleUnit& unit);
     bool             deleteScheduleUnit(const char* unitId);
+    void             deleteAllScheduleUnits();
     ScheduleUnitView GetScheduleUnits() const;
     uint8_t          GetLimit()         const { return limit_; }
 };

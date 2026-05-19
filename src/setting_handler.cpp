@@ -26,6 +26,21 @@ bool SettingHandler::ChangeScheduleUnit(ModuleType type, const char* operate, Sc
     return false;
 }
 
+bool SettingHandler::DeleteAllScheduleUnits(ModuleType type)
+{
+    for (uint8_t i = 0; i < count_; i++)
+    {
+        if (type == settings_[i].GetType())
+        {
+            settings_[i].DeleteAllScheduleUnits();
+            saveModule(i);
+            return true;
+        }
+    }
+    Serial.println("DeleteAllScheduleUnits: non-existent setting");
+    return false;
+}
+
 bool SettingHandler::SetMode(ModuleType type, SettingMode mode)
 {
     for (uint8_t i = 0; i < count_; i++)

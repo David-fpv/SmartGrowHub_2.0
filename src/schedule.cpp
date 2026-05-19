@@ -26,6 +26,11 @@ bool Schedule::deleteScheduleUnit(const char* unitId)
     return false;
 }
 
+void Schedule::deleteAllScheduleUnits()
+{
+    count_ = 0;
+}
+
 ScheduleUnitView Schedule::GetScheduleUnits() const
 {
     return {schedule_units_, count_};

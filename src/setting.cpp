@@ -24,6 +24,11 @@ bool Setting::ChangeScheduleUnit(const char* operate, ScheduleUnit unit)
     return false;
 }
 
+void Setting::DeleteAllScheduleUnits()
+{
+    schedule_.deleteAllScheduleUnits();
+}
+
 void Setting::adjust()
 {
     if (module_function_)

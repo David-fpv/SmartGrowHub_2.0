@@ -127,6 +127,10 @@ const char* JsonHandler::parseMessage(const uint8_t* data, size_t length,
             ScheduleUnit stub(unit_id ? unit_id : "", UnitKind::None, TimeRange{}, Quantity{0, Unit::Unknown});
             code = modules->ChangeScheduleUnit(type, "delete", stub) ? 2 : -2;
         }
+        else if (action && strcmp(action, "clearAll") == 0)
+        {
+            code = modules->DeleteAllScheduleUnits(type) ? 2 : -2;
+        }
         else
         {
             ScheduleUnit unit = parseScheduleUnit(doc["schedule_unit"].as<JsonObject>());
