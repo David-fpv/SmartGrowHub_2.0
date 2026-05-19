@@ -30,9 +30,24 @@ static WifiMqttManager::Config mqtt_config = {
     20, 10, 1000, 10800
 };
 
+static void printConfig() {
+    Serial.println("=== config ===");
+    Serial.printf("  ssid:              %s\n", cfg_ssid);
+    Serial.printf("  server:            %s:%d\n", cfg_server, mqtt_config.port);
+    Serial.printf("  topic_sensors:     %s\n", cfg_topic_sensors);
+    Serial.printf("  topic_modules:     %s\n", cfg_topic_modules);
+    Serial.printf("  topic_response:    %s\n", cfg_topic_response);
+    Serial.printf("  max_wifi_attempts: %d\n", mqtt_config.max_wifi_attempts);
+    Serial.printf("  max_mqtt_attempts: %d\n", mqtt_config.max_mqtt_attempts);
+    Serial.printf("  mqtt_buffer_size:  %d\n", mqtt_config.mqtt_buffer_size);
+    Serial.printf("  utc_offset_sec:    %d\n", mqtt_config.utc_offset_sec);
+    Serial.println("==============");
+}
+
+
 static void loadConfig() {
     // Defaults
-    strncpy(cfg_ssid,           "DAVID-laptop",         sizeof(cfg_ssid) - 1);
+    strncpy(cfg_ssid,           "David phone 2a",       sizeof(cfg_ssid) - 1);
     strncpy(cfg_password,       "qwerty555",            sizeof(cfg_password) - 1);
     strncpy(cfg_server,         "broker.emqx.io",       sizeof(cfg_server) - 1);
     strncpy(cfg_user,           "",                     sizeof(cfg_user) - 1);
@@ -112,6 +127,7 @@ void setup() {
         Serial.println("LittleFS: mount failed");
 
     loadConfig();
+    printConfig();
 
     initialization_sensors();
     setContainerDepth(CONTAINER_DEPTH_CM);
@@ -122,23 +138,25 @@ void setup() {
     delay(100);
 
     modules.AddSetting( Setting(ModuleType::Led,        SettingMode::Off,   blink,          4));
-    modules.AddSetting( Setting(ModuleType::DayLight,   SettingMode::Off,   dayLight,      12));
-    modules.AddSetting( Setting(ModuleType::UvLight,    SettingMode::Off,   phytoLight,    12));
-    modules.AddSetting( Setting(ModuleType::Heater,     SettingMode::Off,   heater,        10));
-    modules.AddSetting( Setting(ModuleType::Humidifier, SettingMode::Off,   airHumidifier, 10));
-    modules.AddSetting( Setting(ModuleType::Fan,        SettingMode::Off,   fan,            4));
-    modules.AddSetting( Setting(ModuleType::WaterPump,  SettingMode::Off,   waterPump,      4));
-    modules.AddSetting( Setting(ModuleType::AirFlap,    SettingMode::Off,   servo,         10));
+    // modules.AddSetting( Setting(ModuleType::DayLight,   SettingMode::Off,   dayLight,      12));
+    // modules.AddSetting( Setting(ModuleType::UvLight,    SettingMode::Off,   phytoLight,    12));
+    // modules.AddSetting( Setting(ModuleType::Heater,     SettingMode::Off,   heater,        10));
+    // modules.AddSetting( Setting(ModuleType::Humidifier, SettingMode::Off,   airHumidifier, 10));
+    // modules.AddSetting( Setting(ModuleType::Fan,        SettingMode::Off,   fan,            4));
+    // modules.AddSetting( Setting(ModuleType::WaterPump,  SettingMode::Off,   waterPump,      4));
+    // modules.AddSetting( Setting(ModuleType::AirFlap,    SettingMode::Off,   servo,         10));
 
     modules.load();
+    modules.printAll();
 
-    info.addSensorInfo( SensorInfo(  1,  "airTemperature",   "C",    readTemperatureBME));
-    info.addSensorInfo( SensorInfo(  2,  "airHumidity",      "%",    readHumidityBME));
-    info.addSensorInfo( SensorInfo(  3,  "pressure",         "Pa",   readPressureBME));
-    info.addSensorInfo( SensorInfo(  4,  "plantHeight",      "cm",   readPlantHeight));
-    info.addSensorInfo( SensorInfo(  5,  "light",            "%",    readLight));
-    info.addSensorInfo( SensorInfo(  6,  "soilTemperature",  "C",    readSoilTemperature));
-    info.addSensorInfo( SensorInfo(  7,  "soilMoisture",     "%",    readSoilMoisture));
+    info.addSensorInfo( SensorInfo(  1,  "randomNumber",   "-",    readRandomNumber));
+    // info.addSensorInfo( SensorInfo(  1,  "airTemperature",   "C",    readTemperatureBME));
+    // info.addSensorInfo( SensorInfo(  2,  "airHumidity",      "%",    readHumidityBME));
+    // info.addSensorInfo( SensorInfo(  3,  "pressure",         "Pa",   readPressureBME));
+    // info.addSensorInfo( SensorInfo(  4,  "plantHeight",      "cm",   readPlantHeight));
+    // info.addSensorInfo( SensorInfo(  5,  "light",            "%",    readLight));
+    // info.addSensorInfo( SensorInfo(  6,  "soilTemperature",  "C",    readSoilTemperature));
+    // info.addSensorInfo( SensorInfo(  7,  "soilMoisture",     "%",    readSoilMoisture));
 }
 
 

@@ -18,6 +18,7 @@ public:
 
     void save();
     void load();
+    void printAll() const;
 
 private:
     Setting settings_[MAX_SETTINGS];

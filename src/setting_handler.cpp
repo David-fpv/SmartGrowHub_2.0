@@ -116,6 +116,63 @@ void SettingHandler::saveModule(uint8_t i)
 }
 
 
+void SettingHandler::printAll() const
+{
+    auto modeStr = [](SettingMode m) -> const char* {
+        switch (m) {
+            case SettingMode::Off:    return "off";
+            case SettingMode::On:     return "on";
+            case SettingMode::Weekly: return "weekly";
+            case SettingMode::Daily:  return "daily";
+            default:                  return "none";
+        }
+    };
+    auto kindStr = [](UnitKind k) -> const char* {
+        switch (k) {
+            case UnitKind::Power:  return "power";
+            case UnitKind::Prefer: return "prefer";
+            default:               return "?";
+        }
+    };
+    auto unitStr = [](Unit u) -> const char* {
+        switch (u) {
+            case Unit::Percent: return "%";
+            case Unit::Celsius: return "C";
+            default:            return "?";
+        }
+    };
+
+    Serial.printf("=== modules (%u) ===\n", count_);
+    for (uint8_t i = 0; i < count_; i++) {
+        const Setting&   s     = settings_[i];
+        ScheduleUnitView units = s.GetSchedule().GetScheduleUnits();
+        uint8_t          limit = s.GetSchedule().GetLimit();
+
+        Serial.printf("  [%u] %-12s  mode=%-7s  schedule=%u/%u\n",
+            i + 1,
+            moduleTypeToString(s.GetType()),
+            modeStr(s.GetMode()),
+            units.count,
+            limit
+        );
+
+        for (const ScheduleUnit& u : units) {
+            TimeRange tr  = u.GetTimeInterval();
+            Quantity  qty = u.GetQuantity();
+            Serial.printf("       %-26s  %-6s  %02dT%02d:%02d -> %02dT%02d:%02d  %d%s\n",
+                u.GetUnitId(),
+                kindStr(u.GetUnitKind()),
+                (int)tr.begin_time_.day_,  tr.begin_time_.hour_,  tr.begin_time_.minutes_,
+                (int)tr.end_time_.day_,    tr.end_time_.hour_,    tr.end_time_.minutes_,
+                qty.magnitude_,
+                unitStr(qty.unit_)
+            );
+        }
+    }
+    Serial.println("===================");
+}
+
+
 void SettingHandler::loadModule(uint8_t i)
 {
     const char* name = moduleTypeToString(settings_[i].GetType());
@@ -159,6 +216,4 @@ void SettingHandler::loadModule(uint8_t i)
         ScheduleUnit unit(uid ? uid : "", kind, interval, qty);
         settings_[i].ChangeScheduleUnit("add", unit);
     }
-
-    Serial.printf("loadModule: loaded %s\n", path);
 }
