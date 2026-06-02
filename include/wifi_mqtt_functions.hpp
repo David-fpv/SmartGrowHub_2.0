@@ -92,7 +92,7 @@ private:
     PubSubClient    client_;
     JsonHandler*    json_handler_      = nullptr;
     SettingHandler* modules_           = nullptr;
-    char            device_id_[8]      = {};
+    char            device_id_[30]      = {};
     Config          config_            = {};
     bool            time_synced_       = false;
     unsigned long   last_reconnect_ms_ = 0;
