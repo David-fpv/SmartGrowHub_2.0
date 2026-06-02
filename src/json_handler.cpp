@@ -15,10 +15,10 @@ const char* JsonHandler::getJsonSensorsData(SensorHandler& handler, const char* 
     {
         const SensorInfo& s = handler.getSensor(i);
         JsonObject entry = data.createNestedObject();
-        entry["SensorId"] = s.GetSensorId();
-        entry["Type"]     = s.GetType();
-        entry["Value"]    = s.GetValue();
-        entry["Unit"]     = s.GetUnit();
+        entry["sensor_id"] = s.GetSensorId();
+        entry["type"]     = s.GetType();
+        entry["value"]    = s.GetValue();
+        entry["unit"]     = s.GetUnit();
     }
 
     serializeJson(json, buf, sizeof(buf));
