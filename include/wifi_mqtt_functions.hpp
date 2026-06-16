@@ -39,8 +39,7 @@ public:
               const char* device_id, const Config& config) {
         modules_      = modules;
         json_handler_ = json_handler;
-        strncpy(device_id_, device_id, sizeof(device_id_) - 1);
-        device_id_[sizeof(device_id_) - 1] = '\0';
+        strncpy(device_id_, device_id, strlen(device_id) + 1);
         config_ = config;
     }
 
@@ -92,7 +91,7 @@ private:
     PubSubClient    client_;
     JsonHandler*    json_handler_      = nullptr;
     SettingHandler* modules_           = nullptr;
-    char            device_id_[30]      = {};
+    char            device_id_[28]      = {};
     Config          config_            = {};
     bool            time_synced_       = false;
     unsigned long   last_reconnect_ms_ = 0;

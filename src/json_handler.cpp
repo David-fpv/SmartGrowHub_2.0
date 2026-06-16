@@ -109,6 +109,10 @@ const char* JsonHandler::parseMessage(const uint8_t* data, size_t length,
 
     if (!msg_device_id || strcmp(msg_device_id, device_id) != 0)
     {
+        Serial.print("Device id: ");
+        Serial.println(device_id);
+        Serial.print("Message device id: ");
+        Serial.println(msg_device_id);
         Serial.println("parseMessage: unsuitable identification number");
         return getAnswerForMessage(device_id, message_id ? message_id : "000000", -3);
     }

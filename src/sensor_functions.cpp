@@ -110,7 +110,7 @@ float readSoilTemperature()
 
 float readSoilMoisture()
 {
-  return analogRead(PIN_SOIL_MOISTURE) / 40.95;
+  return fabs(analogRead(PIN_SOIL_MOISTURE) / 40.95 - 100);
 }
 
 

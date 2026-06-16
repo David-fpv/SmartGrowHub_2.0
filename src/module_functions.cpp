@@ -205,7 +205,7 @@ void phytoLight(Setting setting, TimeStamp time_now)
 
 void heater(Setting setting, TimeStamp time_now)
 {
-    const int   pin        = PIN_TRANSISTOR_3;
+    const int   pin        = PIN_TRANSISTOR_4;
     const float inaccuracy = 1.0f;
 
     switch (setting.GetMode())
@@ -324,7 +324,7 @@ void fan(Setting setting, TimeStamp time_now)
 
 void waterPump(Setting setting, TimeStamp time_now)
 {
-    const int   pin        = PIN_TRANSISTOR_6;
+    const int   pin        = PIN_TRANSISTOR_3;
     const float inaccuracy = 5.0f;
 
     switch (setting.GetMode())
